@@ -1,0 +1,27 @@
+services:
+  rustfs:
+    image: rustfs/rustfs:${RUSTFS_VERSION}
+    ports:
+      - '${RUSTFS_PORT}:9000'
+      - '${RUSTFS_INTERFACE_PORT}:9001'
+    environment:
+      RUSTFS_ACCESS_KEY: ${RUSTFS_ACCESS_KEY}
+      RUSTFS_SECRET_KEY: ${RUSTFS_SECRET_KEY}
+    volumes:
+      - ./rustfs/data:/data
+
+  postgres:
+    image: postgres:${POSTGRES_VERSION}
+    ports:
+      - '${POSTGRES_PORT}:5432'
+
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+
+    volumes:
+      - postgres_data:/var/lib/postgresql
+
+volumes:
+  postgres_data:
