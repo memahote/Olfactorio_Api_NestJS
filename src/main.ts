@@ -17,9 +17,23 @@ async function bootstrap() {
     .setTitle('Olfactorio API')
     .setDescription('Route description of Olfactorio API')
     .setVersion('1.0')
+    .addBearerAuth(
+      {
+        type: 'http',
+        scheme: 'bearer',
+        bearerFormat: 'JWT',
+        description: 'Enter your JWT access token',
+      },
+      'access-token',
+    )
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
+  document.security = [
+    {
+      'access-token': [],
+    },
+  ];
   SwaggerModule.setup('api/doc', app, document);
 
   await app.listen(port);

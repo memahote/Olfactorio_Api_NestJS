@@ -1,7 +1,15 @@
+import { ApiProperty } from '@nestjs/swagger';
+import { GeneratedTokensDto } from 'src/auth/token/utils/dtos/respones/generated-tokens.dto';
 import { GeneratedTokens } from 'src/auth/token/utils/types/generated-tokens.type';
 import { GetUserDto } from 'src/users/_utils/dtos/responses/get-user.dto';
 
 export class AuthResponseDto {
+  @ApiProperty({
+    type: GetUserDto,
+  })
   user: GetUserDto;
-  tokens: GeneratedTokens;
+  @ApiProperty({
+    type: GeneratedTokensDto,
+  })
+  tokens: GeneratedTokensDto;
 }
