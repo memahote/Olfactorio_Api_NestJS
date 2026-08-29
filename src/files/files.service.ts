@@ -10,8 +10,11 @@ import { MemoryStoredFile } from 'nestjs-form-data';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { S3_CLIENT_TOKEN } from './files.provider';
 import { FilesMapper } from './files.mapper';
-import { FilesDirectoryPrivacyValues, FilesDirectoryValues } from './_utils/types/files.types';
-import { UploadedFile } from './_utils/types/uploaded-file.types';
+import { FilesDirectoryPrivacyValues } from './_utils/types/files-directory-privacy-values.types';
+import { FilesDirectoryValues } from './_utils/types/files-directory-values.types';
+import { Files } from './_utils/types/files.types';
+import { FilesRepository } from './files.repository';
+import { Exceptions } from 'src/_utils/exceptions/exceptions';
 
 @Injectable()
 export class FilesService {
@@ -23,6 +26,7 @@ export class FilesService {
     @Inject(S3_CLIENT_TOKEN) private readonly s3Client: S3Client,
     private readonly configService: ConfigService,
     private readonly filesMapper: FilesMapper,
+    private readonly filesRepository: FilesRepository,
   ) {
     this.BUCKET_NAME =
       this.configService.getOrThrow<string>('RUSTFS_BUCKET_NAME');
@@ -33,7 +37,7 @@ export class FilesService {
     file: MemoryStoredFile,
     filesPrivacyDirectoryValues: FilesDirectoryPrivacyValues,
     filesDirectoryType: FilesDirectoryValues,
-  ): Promise<UploadedFile> {
+  ): Promise<Files> {
     const key = this.filesMapper.buildFileKey(
       filesPrivacyDirectoryValues,
       filesDirectoryType,
@@ -48,10 +52,20 @@ export class FilesService {
       }),
     );
 
-    return this.filesMapper.toUploadedFile(this.BUCKET_NAME, key, file)
+    const fileData = this.filesMapper.toUploadedFile(
+      this.BUCKET_NAME,
+      key,
+      file,
+    );
+
+    return this.filesRepository.create(fileData);
   }
 
-  async deleteFile(file: UploadedFile) {
+  async getFileById(id: string) {
+    return this.filesRepository.findById(id);
+  }
+
+  async deleteFile(file: Files) {
     const command = new DeleteObjectCommand({
       Bucket: this.BUCKET_NAME,
       Key: file.key,
@@ -71,11 +85,17 @@ export class FilesService {
     });
   }
 
-  getPublicUrl(key: string): string {
+  async getPublicUrl(fileId: string) {
+    const file = await this.filesRepository.findById(fileId);
+
+    if (!file) {
+      Exceptions.NOT_FOUND('File');
+    }
+
     return this.filesMapper.buildFilePublicUrl(
       this.RUSTFS_URL,
       this.BUCKET_NAME,
-      key,
+      file.key,
     );
   }
 }
