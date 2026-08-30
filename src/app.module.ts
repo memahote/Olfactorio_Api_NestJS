@@ -9,6 +9,7 @@ import { AuthModule } from './auth/auth.module';
 import { FilesModule } from './files/files.module';
 import { OlfactiveFamiliesModule } from './olfactive-family/olfactive-families.module';
 import { MemoryStoredFile, NestjsFormDataModule } from 'nestjs-form-data';
+import { AttributesModule } from './attributes/attributes.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { MemoryStoredFile, NestjsFormDataModule } from 'nestjs-form-data';
     FilesModule,
     OlfactiveFamiliesModule,
     NestjsFormDataModule.config({ isGlobal: true, storage: MemoryStoredFile }),
+    AttributesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
