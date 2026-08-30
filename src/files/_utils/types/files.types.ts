@@ -1,7 +1,8 @@
-import { FilesDirectoryEnum, FilesDirectoryPrivacyEnum } from "../enums/files.enums";
-
-export type FilesDirectoryValues =
-  (typeof FilesDirectoryEnum)[keyof typeof FilesDirectoryEnum];
-
-export type FilesDirectoryPrivacyValues =
-  (typeof FilesDirectoryPrivacyEnum)[keyof typeof FilesDirectoryPrivacyEnum];
+export type Files = {
+  id: string,
+  bucket: string;
+  key: string;
+  fileName: string;
+  mimeType: string;
+  size: string;
+};

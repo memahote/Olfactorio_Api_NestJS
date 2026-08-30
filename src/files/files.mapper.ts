@@ -1,11 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import {
-  FilesDirectoryPrivacyValues,
-  FilesDirectoryValues,
-} from './_utils/types/files.types';
+
 import { uuid } from 'drizzle-orm/pg-core';
 import { MemoryStoredFile } from 'nestjs-form-data';
-import { UploadedFile } from './_utils/types/uploaded-file.types';
+import { Files } from './_utils/types/files.types';
+import { FilesDirectoryPrivacyValues } from './_utils/types/files-directory-privacy-values.types';
+import { FilesDirectoryValues } from './_utils/types/files-directory-values.types';
 
 @Injectable()
 export class FilesMapper {
@@ -13,12 +12,12 @@ export class FilesMapper {
     bucket: string,
     key: string,
     file: MemoryStoredFile,
-  ): UploadedFile => ({
+  ) => ({
     bucket: bucket,
     key: key,
     fileName: file.originalName,
     mimeType: file.mimeType,
-    size: file.size,
+    size: file.size.toString(),
   });
   buildFileKey = (
     bucketDirectoryPrivacyType: FilesDirectoryPrivacyValues,
