@@ -104,8 +104,8 @@ export class OlfactiveFamiliesService {
       throw Exceptions.NOT_FOUND('File');
     }
 
-    await this.filesService.deleteFile(file);
-
     await this.olfactiveFamilyRepository.delete(id);
+
+    await this.filesService.deleteFile(file);
   }
 }

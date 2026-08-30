@@ -66,12 +66,13 @@ export class FilesService {
   }
 
   async deleteFile(file: Files) {
-    const command = new DeleteObjectCommand({
+    await this.filesRepository.delete(file.id);
+    const deletedFile = new DeleteObjectCommand({
       Bucket: this.BUCKET_NAME,
       Key: file.key,
     });
 
-    return await this.s3Client.send(command);
+    return await this.s3Client.send(deletedFile);
   }
 
   async getPresignedUrl(key: string) {
