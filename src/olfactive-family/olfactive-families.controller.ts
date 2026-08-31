@@ -122,23 +122,23 @@ export class OlfactiveFamiliesController {
     return this.olfactiveFamiliesService.getOlfactiveFamilyById(id);
   }
 
-  @Delete(':id')
-  @ApiOperation({
-    summary: 'Delete an olfactive family',
-  })
-  @ApiParam({
-    name: 'id',
-    description: 'Olfactive family unique identifier',
-    example: '550e8400-e29b-41d4-a716-446655440000',
-  })
-  @ApiOkResponse({
-    description: 'Olfactive family successfully deleted',
-    type: GetOlfactiveFamilyDto,
-  })
-  @ApiNotFoundResponse({
-    description: 'Olfactive family not found',
-  })
-  async deleteOlfactiveFamily(@Param('id') id: string) {
-    return this.olfactiveFamiliesService.deleteOlfactiveFamily(id);
-  }
+  // @Delete(':id')
+  // @ApiOperation({
+  //   summary: 'Delete an olfactive family',
+  // })
+  // @ApiParam({
+  //   name: 'id',
+  //   description: 'Olfactive family unique identifier',
+  //   example: '550e8400-e29b-41d4-a716-446655440000',
+  // })
+  // @ApiOkResponse({
+  //   description: 'Olfactive family successfully deleted',
+  //   type: GetOlfactiveFamilyDto,
+  // })
+  // @ApiNotFoundResponse({
+  //   description: 'Olfactive family not found',
+  // })
+  // async deleteOlfactiveFamily(@Param('id') id: string) {
+  //   return this.olfactiveFamiliesService.deleteOlfactiveFamily(id);
+  // }
 }
