@@ -54,7 +54,7 @@ export class CreateOlfactiveFamilyDto {
     type: [String],
   })
   @IsArray()
-  // @IsUUID('4', { each: true })
+  @IsUUID('4', { each: true })
   attributeIds: string[];
 
 }

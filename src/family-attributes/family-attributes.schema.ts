@@ -17,9 +17,9 @@ export const familyAttributes = pgTable(
         onDelete: 'cascade',
       }),
   },
-  (table) => ({
+  (table) => [({
     pk: primaryKey({
       columns: [table.familyId, table.attributeId],
     }),
-  }),
+  })],
 );
