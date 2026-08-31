@@ -12,6 +12,7 @@ import { MemoryStoredFile, NestjsFormDataModule } from 'nestjs-form-data';
 import { AttributesModule } from './attributes/attributes.module';
 import { FamilyAttributesModule } from './family-attributes/family-attributes.module';
 import { ImpressionsModule } from './impressions/impressions.module';
+import { FeelingsModule } from './feelings/feelings.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { ImpressionsModule } from './impressions/impressions.module';
     AttributesModule,
     FamilyAttributesModule,
     ImpressionsModule,
+    FeelingsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
