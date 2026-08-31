@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsHexColor, IsNotEmpty, IsString, IsUrl } from 'class-validator';
+import { IsArray, IsHexColor, IsNotEmpty, IsString, IsUrl, IsUUID } from 'class-validator';
 import { HasMimeType, IsFile, MaxFileSize, MemoryStoredFile } from 'nestjs-form-data';
 
 export class CreateOlfactiveFamilyDto {
@@ -44,4 +44,17 @@ export class CreateOlfactiveFamilyDto {
   @IsNotEmpty()
   @IsHexColor()
   secondaryColor: string;
+
+  @ApiProperty({
+    description: 'IDs of the attributes associated with this family',
+    example: [
+      '550e8400-e29b-41d4-a716-446655440000',
+      '6ba7b810-9dad-11d1-80b4-00c04fd430c8',
+    ],
+    type: [String],
+  })
+  @IsArray()
+  // @IsUUID('4', { each: true })
+  attributeIds: string[];
+
 }

@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { MemoryStoredFile } from 'nestjs-form-data';
 import { FilesService } from 'src/files/files.service';
 import {
   FilesDirectoryEnum,
@@ -9,7 +8,6 @@ import { CreateOlfactiveFamilyDto } from './_utils/dtos/requests/create-olfactiv
 import { OlfactiveFamiliesMapper } from './olfactive-families.mapper';
 import { OlfactiveFamiliesRepository } from './olfactive-families.repository';
 import { Exceptions } from 'src/_utils/exceptions/exceptions';
-import { olfactiveFamilies } from './olfactive-families.schema';
 
 @Injectable()
 export class OlfactiveFamiliesService {
@@ -22,7 +20,6 @@ export class OlfactiveFamiliesService {
   async createOlfactiveFamily(
     createOlfactiveFamilyDto: CreateOlfactiveFamilyDto,
   ) {
-    let olfactiveFamily: typeof olfactiveFamilies.$inferSelect | null = null;
     const existingFamily = await this.olfactiveFamilyRepository.findByName(
       createOlfactiveFamilyDto.name,
     );
@@ -30,6 +27,7 @@ export class OlfactiveFamiliesService {
     if (existingFamily) {
       throw Exceptions.ALREADY_EXIST('Olfactive family');
     }
+
     const file = await this.filesService.uploadFile(
       createOlfactiveFamilyDto.image,
       FilesDirectoryPrivacyEnum.PUBLIC,
@@ -37,57 +35,63 @@ export class OlfactiveFamiliesService {
     );
 
     try {
-      olfactiveFamily = await this.olfactiveFamilyRepository.create(
-        this.olfactiveFamilyMapper.toCreateOlfactiveFamily(
-          createOlfactiveFamilyDto,
-          file.id,
-        ),
+      const olfactiveFamily =
+        await this.olfactiveFamilyRepository.createWithAttributes(
+          this.olfactiveFamilyMapper.toCreateOlfactiveFamily(
+            createOlfactiveFamilyDto,
+            file.id,
+          ),
+          createOlfactiveFamilyDto.attributeIds,
+        );
+
+      const imageUrl = await this.filesService.getPublicUrl(file.id);
+
+      return this.olfactiveFamilyMapper.toGetOlfactiveFamilyDto(
+        olfactiveFamily.family,
+        imageUrl,
+        olfactiveFamily.attributes,
       );
     } catch (error) {
       await this.filesService.deleteFile(file);
-
       throw error;
     }
-
-    const imageUrl = await this.filesService.getPublicUrl(file.id);
-
-    return this.olfactiveFamilyMapper.toGetOlfactiveFamilyDto(
-      olfactiveFamily,
-      imageUrl,
-    );
   }
 
   async getOlfactiveFamilies() {
-    const olfactiveFamilies = await this.olfactiveFamilyRepository.findAll();
+    const families =
+      await this.olfactiveFamilyRepository.findAllWithAttributes();
 
     return Promise.all(
-      olfactiveFamilies.map(async (olfactiveFamily) => {
-        const imageUrl = await this.filesService.getPublicUrl(
-          olfactiveFamily.fileId,
-        );
+      families.map(async ({ family, attributes }) => {
+        const imageUrl = await this.filesService.getPublicUrl(family.fileId);
 
         return this.olfactiveFamilyMapper.toGetOlfactiveFamilyDto(
-          olfactiveFamily,
+          family,
           imageUrl,
+          attributes,
         );
       }),
     );
   }
 
   async getOlfactiveFamilyById(id: string) {
-    const olfactiveFamily = await this.olfactiveFamilyRepository.findById(id);
+    const rows =
+      await this.olfactiveFamilyRepository.findByIdWithAttributes(id);
 
-    if (!olfactiveFamily) {
+    if (rows.length === 0) {
       throw Exceptions.NOT_FOUND('Olfactive family');
     }
 
-    const imageUrl = await this.filesService.getPublicUrl(
-      olfactiveFamily.fileId,
-    );
+    const family = rows[0].family;
+
+    const attributes = rows.map((row) => row.attribute);
+
+    const imageUrl = await this.filesService.getPublicUrl(family.fileId);
 
     return this.olfactiveFamilyMapper.toGetOlfactiveFamilyDto(
-      olfactiveFamily,
+      family,
       imageUrl,
+      attributes,
     );
   }
 

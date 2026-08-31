@@ -1,4 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { GetAttributeDto } from 'src/attributes/_utils/dtos/responses/get-attribute.dto';
+import { Attribute } from 'src/attributes/_utils/types/attributes.types';
 
 export class GetOlfactiveFamilyDto {
   @ApiProperty({
@@ -36,4 +38,10 @@ export class GetOlfactiveFamilyDto {
     example: '#D2691E',
   })
   secondaryColor: string;
+
+  @ApiProperty({
+    description: 'Attributes associated with the olfactive family',
+    type: [GetAttributeDto],
+  })
+  attributes: GetAttributeDto[];
 }

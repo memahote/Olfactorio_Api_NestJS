@@ -11,12 +11,14 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { GetRoleDto } from './utils/dtos/responses/get-role.dto';
+import { Public } from 'src/_utils/decorators/public.decorator';
 
 @ApiTags('Roles')
 @Controller('roles')
 export class RolesController {
   constructor(private readonly rolesService: RolesService) {}
 
+  @Public()
   @Post()
   @ApiOperation({
     summary: 'Create a role',

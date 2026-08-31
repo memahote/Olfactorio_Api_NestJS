@@ -10,6 +10,7 @@ import { FilesModule } from './files/files.module';
 import { OlfactiveFamiliesModule } from './olfactive-family/olfactive-families.module';
 import { MemoryStoredFile, NestjsFormDataModule } from 'nestjs-form-data';
 import { AttributesModule } from './attributes/attributes.module';
+import { FamilyAttributesModule } from './family-attributes/family-attributes.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { AttributesModule } from './attributes/attributes.module';
     OlfactiveFamiliesModule,
     NestjsFormDataModule.config({ isGlobal: true, storage: MemoryStoredFile }),
     AttributesModule,
+    FamilyAttributesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
