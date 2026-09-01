@@ -17,7 +17,7 @@ export class AtmospheresRepository {
     return atmosphere;
   }
 
-  async findAllVisibleForUser(userId: string): Promise<Atmosphere[]> {
+  async findAllUserAtmospheres(userId: string): Promise<Atmosphere[]> {
     return this.databaseService.db
       .select()
       .from(atmospheres)
@@ -29,6 +29,10 @@ export class AtmospheresRepository {
       .select()
       .from(atmospheres)
       .where(isNull(atmospheres.ownerId));
+  }
+
+  async findAllAtmosphere(): Promise<Atmosphere[]> {
+    return this.databaseService.db.select().from(atmospheres);
   }
 
   async findById(id: string): Promise<Atmosphere> {
@@ -80,10 +84,19 @@ export class AtmospheresRepository {
     return atmosphere;
   }
 
-  async delete(id: string): Promise<Atmosphere> {
+  async delete(id: string, userId: string): Promise<Atmosphere> {
     const [atmosphere] = await this.databaseService.db
       .delete(atmospheres)
-      .where(eq(atmospheres.id, id))
+      .where(and(eq(atmospheres.id, id), eq(atmospheres.ownerId, userId)))
+      .returning();
+
+    return atmosphere;
+  }
+
+  async deleteDefault(id: string): Promise<Atmosphere> {
+    const [atmosphere] = await this.databaseService.db
+      .delete(atmospheres)
+      .where(and(eq(atmospheres.id, id), isNull(atmospheres.ownerId)))
       .returning();
 
     return atmosphere;

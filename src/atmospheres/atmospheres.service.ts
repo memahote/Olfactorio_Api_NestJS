@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { AtmospheresRepository } from './atmospheres.repository';
 import { CreateAtmosphereDto } from './_utils/dtos/requests/create-atmosphere.dto';
-import { Atmosphere } from './_utils/types/atmospheres.types';
 import { Exceptions } from 'src/_utils/exceptions/exceptions';
 import { FilesService } from 'src/files/files.service';
 import {
@@ -19,8 +18,6 @@ export class AtmospheresService {
     private readonly atmospheresMapper: AtmospheresMapper,
   ) {}
 
-  //TODO CreateAdmin
-  //GET Public Atmo
   async createPersonalAtmosphere(
     atmosphereDto: CreateAtmosphereDto,
     userId: string,
@@ -105,9 +102,9 @@ export class AtmospheresService {
     return this.atmospheresMapper.toGetAtmosphereDto(atmosphere, imageUrl);
   }
 
-  async findAll(userId: string): Promise<GetAtmosphereDto[]> {
+  async findAllUserAtmospheres(userId: string): Promise<GetAtmosphereDto[]> {
     const atmospheres =
-      await this.atmosphereRepository.findAllVisibleForUser(userId);
+      await this.atmosphereRepository.findAllUserAtmospheres(userId);
 
     return Promise.all(
       atmospheres.map(async (atmosphere) => {
@@ -120,7 +117,7 @@ export class AtmospheresService {
     );
   }
 
-  async findAllDefault(): Promise<GetAtmosphereDto[]> {
+  async findAllDefault() {
     const atmospheres = await this.atmosphereRepository.findAllDefault();
 
     return Promise.all(
@@ -132,5 +129,39 @@ export class AtmospheresService {
         return this.atmospheresMapper.toGetAtmosphereDto(atmosphere, imageUrl);
       }),
     );
+  }
+
+  async findAllAtmosphere(): Promise<GetAtmosphereDto[]> {
+    const atmospheres = await this.atmosphereRepository.findAllAtmosphere();
+
+    return Promise.all(
+      atmospheres.map(async (atmosphere) => {
+        const imageUrl = await this.filesService.getPublicUrl(
+          atmosphere.fileId,
+        );
+
+        return this.atmospheresMapper.toGetAtmosphereDto(atmosphere, imageUrl);
+      }),
+    );
+  }
+
+  async delete(id: string, userId: string) {
+    const deleteAtmosphere = await this.atmosphereRepository.delete(id, userId);
+
+    if (!deleteAtmosphere) {
+      throw Exceptions.NOT_FOUND('Atmosphere');
+    }
+
+    return deleteAtmosphere;
+  }
+
+  async deleteDefault(id: string) {
+    const deleteAtmosphere = await this.atmosphereRepository.deleteDefault(id);
+
+    if (!deleteAtmosphere) {
+      throw Exceptions.NOT_FOUND('Atmosphere');
+    }
+
+    return deleteAtmosphere;
   }
 }

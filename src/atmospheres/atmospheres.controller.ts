@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Post, Req } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Req,
+} from '@nestjs/common';
 import { AtmospheresService } from './atmospheres.service';
 import { CurrentUser } from 'src/_utils/decorators/currentUser.decorator';
 import { GetUserDto } from 'src/users/_utils/dtos/responses/get-user.dto';
@@ -19,11 +27,23 @@ export class AtmospheresController {
     return this.atmospheresService.createDefaultAtmosphere(dto);
   }
 
-  // @Get('amdin')
-  // @Roles(RoleEnum.ADMIN)
-  // getDefaultAtmosphere() {
+  @Get('admin/all')
+  @Roles(RoleEnum.ADMIN)
+  getAllAtmosphere() {
+    return this.atmospheresService.findAllAtmosphere();
+  }
 
-  // }
+  @Get('admin/default')
+  @Roles(RoleEnum.ADMIN)
+  getDefaultAtmosphere() {
+    return this.atmospheresService.findAllDefault();
+  }
+
+  @Delete('admin/:id')
+  @Roles(RoleEnum.ADMIN)
+  deleteDefault(@Param('id') id: string) {
+    return this.atmospheresService.deleteDefault(id);
+  }
 
   @Post()
   @FormDataRequest()
@@ -34,6 +54,11 @@ export class AtmospheresController {
 
   @Get()
   findAll(@CurrentUser() user: GetUserDto) {
-    return this.atmospheresService.findAll(user.id);
+    return this.atmospheresService.findAllUserAtmospheres(user.id);
+  }
+
+  @Delete(':id')
+  delete(@CurrentUser() user: GetUserDto, @Param('id') id: string) {
+    return this.atmospheresService.delete(id, user.id);
   }
 }

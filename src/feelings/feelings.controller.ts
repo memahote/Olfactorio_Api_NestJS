@@ -75,7 +75,7 @@ export class FeelingsController {
     description: 'Feeling not found.',
   })
   async findById(
-    @Param('id', new ParseUUIDPipe()) id: string,
+    @Param('id') id: string,
   ): Promise<GetFeelingDto> {
     return this.feelingsService.findById(id);
   }
@@ -97,7 +97,7 @@ export class FeelingsController {
     description: 'Feeling not found.',
   })
   async delete(
-    @Param('id', new ParseUUIDPipe()) id: string,
+    @Param('id') id: string,
   ): Promise<GetFeelingDto> {
     return this.feelingsService.delete(id);
   }
