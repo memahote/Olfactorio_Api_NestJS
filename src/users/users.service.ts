@@ -11,9 +11,7 @@ export class UsersService {
   ) {}
 
   async findByEmail(email: string) {
-    return this.userMapper.toGetUserDto(
-      await this.usersRepository.findByEmail(email),
-    );
+    return this.usersRepository.findByEmail(email);
   }
 
   async createUser(createUserDto: CreateUserDto) {
@@ -28,7 +26,13 @@ export class UsersService {
     );
   }
 
+  async findByIdWithRole(id: string) {
+    return this.userMapper.toGetUserWithRoleDto(
+      await this.usersRepository.findByIdWithRole(id),
+    );
+  }
+
   async findByEmailForAuth(email: string) {
-    return this.usersRepository.findByEmail(email)
+    return this.usersRepository.findByEmail(email);
   }
 }

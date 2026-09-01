@@ -90,7 +90,7 @@ export class FilesService {
     const file = await this.filesRepository.findById(fileId);
 
     if (!file) {
-      Exceptions.NOT_FOUND('File');
+      throw Exceptions.NOT_FOUND('File');
     }
 
     return this.filesMapper.buildFilePublicUrl(

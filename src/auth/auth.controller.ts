@@ -24,8 +24,8 @@ import { GeneratedTokensDto } from './token/utils/dtos/respones/generated-tokens
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @Public()
   @Post('register')
+  @Public()
   @ApiOperation({
     summary: 'Register a new user',
   })
@@ -81,7 +81,7 @@ export class AuthController {
   })
   @ApiOkResponse({
     description: 'Tokens successfully refreshed',
-    type: GeneratedTokensDto
+    type: GeneratedTokensDto,
   })
   @ApiUnauthorizedResponse({
     description: 'Invalid or expired refresh token',
