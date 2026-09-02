@@ -12,14 +12,16 @@ import {
 } from '@nestjs/swagger';
 import { GetRoleDto } from './utils/dtos/responses/get-role.dto';
 import { Public } from 'src/_utils/decorators/public.decorator';
+import { Roles } from 'src/_utils/decorators/roles.decorator';
+import { RoleEnum } from './utils/enums/role.enum';
 
 @ApiTags('Roles')
 @Controller('roles')
 export class RolesController {
   constructor(private readonly rolesService: RolesService) {}
 
-  @Public()
   @Post()
+  @Roles(RoleEnum.ADMIN)
   @ApiOperation({
     summary: 'Create a role',
   })
@@ -32,6 +34,7 @@ export class RolesController {
   }
 
   @Get()
+  @Roles(RoleEnum.ADMIN)
   @ApiOperation({
     summary: 'Get all roles',
   })
@@ -45,6 +48,7 @@ export class RolesController {
   }
 
   @Delete(':id')
+  @Roles(RoleEnum.ADMIN)
   @ApiOperation({
     summary: 'Delete a role',
   })

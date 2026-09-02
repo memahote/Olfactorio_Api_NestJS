@@ -35,7 +35,7 @@ export class AtmospheresService {
     const file = await this.filesService.uploadFile(
       atmosphereDto.file,
       FilesDirectoryPrivacyEnum.PRIVATE,
-      FilesDirectoryEnum.ATMOSPHERE,
+      FilesDirectoryEnum.ATMOSPHERES,
     );
 
     try {
@@ -70,7 +70,7 @@ export class AtmospheresService {
     const file = await this.filesService.uploadFile(
       dto.file,
       FilesDirectoryPrivacyEnum.PRIVATE,
-      FilesDirectoryEnum.ATMOSPHERE,
+      FilesDirectoryEnum.ATMOSPHERES,
     );
 
     try {

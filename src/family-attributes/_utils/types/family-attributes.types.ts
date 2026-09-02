@@ -1,5 +1,5 @@
 import { familyAttributes } from "src/family-attributes/family-attributes.schema";
 
-export type FamilyAttributes = typeof familyAttributes.$inferSelect;
+export type FamilyAttributesInsert = typeof familyAttributes.$inferInsert;
 
-export type CreateFamilyAttributes  = typeof familyAttributes.$inferInsert;
+export type FamilyAttributesSelect = typeof familyAttributes.$inferSelect;

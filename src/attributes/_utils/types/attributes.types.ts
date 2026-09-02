@@ -1,5 +1,5 @@
-import { attributes } from "src/attributes/attributes.schema";
+import { attributes } from 'src/attributes/attributes.schema';
 
-export type Attribute = typeof attributes.$inferSelect;
+export type AttributeInsert = typeof attributes.$inferInsert;
 
-export type CreateAttribute = typeof attributes.$inferInsert;
+export type AttributeSelect = typeof attributes.$inferSelect;

@@ -1,0 +1,2 @@
+ALTER TABLE "notes" DROP CONSTRAINT "notes_familyId_olfactive_families_id_fkey", ADD CONSTRAINT "notes_familyId_olfactive_families_id_fkey" FOREIGN KEY ("familyId") REFERENCES "olfactive_families"("id") ON DELETE CASCADE;--> statement-breakpoint
+ALTER TABLE "notes" DROP CONSTRAINT "notes_parent_note_id", ADD CONSTRAINT "notes_parent_note_id" FOREIGN KEY ("parent_note_id") REFERENCES "notes"("id") ON DELETE CASCADE;

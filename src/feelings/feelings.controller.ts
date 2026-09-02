@@ -20,15 +20,16 @@ import {
 import { FeelingsService } from './feelings.service';
 import { CreateFeelingDto } from './_utils/dtos/requests/create-feeling.dto';
 import { GetFeelingDto } from './_utils/dtos/responses/get-feeling.dto';
+import { Roles } from 'src/_utils/decorators/roles.decorator';
+import { RoleEnum } from 'src/roles/utils/enums/role.enum';
 
 @ApiTags('Feelings')
 @Controller('feelings')
 export class FeelingsController {
-  constructor(
-    private readonly feelingsService: FeelingsService,
-  ) {}
+  constructor(private readonly feelingsService: FeelingsService) {}
 
   @Post()
+  @Roles(RoleEnum.ADMIN)
   @ApiOperation({
     summary: 'Create a feeling',
   })
@@ -39,9 +40,7 @@ export class FeelingsController {
   @ApiConflictResponse({
     description: 'The feeling already exists for this user.',
   })
-  async create(
-    @Body() feelingDto: CreateFeelingDto,
-  ): Promise<GetFeelingDto> {
+  async create(@Body() feelingDto: CreateFeelingDto): Promise<GetFeelingDto> {
     return this.feelingsService.create(feelingDto);
   }
 
@@ -74,13 +73,12 @@ export class FeelingsController {
   @ApiNotFoundResponse({
     description: 'Feeling not found.',
   })
-  async findById(
-    @Param('id') id: string,
-  ): Promise<GetFeelingDto> {
+  async findById(@Param('id') id: string): Promise<GetFeelingDto> {
     return this.feelingsService.findById(id);
   }
 
   @Delete(':id')
+  @Roles(RoleEnum.ADMIN)
   @ApiOperation({
     summary: 'Delete a feeling',
   })
@@ -96,9 +94,7 @@ export class FeelingsController {
   @ApiNotFoundResponse({
     description: 'Feeling not found.',
   })
-  async delete(
-    @Param('id') id: string,
-  ): Promise<GetFeelingDto> {
+  async delete(@Param('id') id: string): Promise<GetFeelingDto> {
     return this.feelingsService.delete(id);
   }
 }

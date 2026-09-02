@@ -12,6 +12,8 @@ import {
 
 import { ImpressionsService } from './impressions.service';
 import { CreateImpressionDto } from './_utils/dtos/requests/create-impression.dto';
+import { Roles } from 'src/_utils/decorators/roles.decorator';
+import { RoleEnum } from 'src/roles/utils/enums/role.enum';
 
 @ApiTags('Impressions')
 @Controller('impressions')
@@ -19,6 +21,7 @@ export class ImpressionsController {
   constructor(private readonly impressionsService: ImpressionsService) {}
 
   @Post()
+  @Roles(RoleEnum.ADMIN)
   @ApiOperation({
     summary: 'Create an impression',
     description: 'Creates a new impression.',
@@ -72,6 +75,7 @@ export class ImpressionsController {
   }
 
   @Delete(':id')
+  @Roles(RoleEnum.ADMIN)
   @ApiOperation({
     summary: 'Delete an impression',
     description: 'Deletes an impression using its ID.',

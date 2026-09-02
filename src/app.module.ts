@@ -14,6 +14,7 @@ import { FamilyAttributesModule } from './family-attributes/family-attributes.mo
 import { ImpressionsModule } from './impressions/impressions.module';
 import { FeelingsModule } from './feelings/feelings.module';
 import { AtmospheresModule } from './atmospheres/atmospheres.module';
+import { NotesModule } from './notes/notes.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { AtmospheresModule } from './atmospheres/atmospheres.module';
     ImpressionsModule,
     FeelingsModule,
     AtmospheresModule,
+    NotesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

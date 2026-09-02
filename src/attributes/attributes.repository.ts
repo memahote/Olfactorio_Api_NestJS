@@ -2,13 +2,13 @@ import { Injectable } from '@nestjs/common';
 import { DatabaseService } from 'src/database/database.service';
 import { attributes } from './attributes.schema';
 import { eq } from 'drizzle-orm';
-import { Attribute, CreateAttribute } from './_utils/types/attributes.types';
+import { AttributeInsert, AttributeSelect } from './_utils/types/attributes.types';
 
 @Injectable()
 export class AttributesRepository {
   constructor(private readonly databaseService: DatabaseService) {}
 
-  async create(data: CreateAttribute): Promise<Attribute> {
+  async create(data: AttributeInsert): Promise<AttributeSelect> {
     const [attribute] = await this.databaseService.db
       .insert(attributes)
       .values(data)
@@ -17,11 +17,11 @@ export class AttributesRepository {
     return attribute;
   }
 
-  async findAll(): Promise<Attribute[]> {
+  async findAll(): Promise<AttributeSelect[]> {
     return this.databaseService.db.select().from(attributes);
   }
 
-  async findById(id: string): Promise<Attribute> {
+  async findById(id: string): Promise<AttributeSelect> {
     const [attribute] = await this.databaseService.db
       .select()
       .from(attributes)
@@ -30,7 +30,7 @@ export class AttributesRepository {
     return attribute;
   }
 
-  async findByName(name: string): Promise<Attribute> {
+  async findByName(name: string): Promise<AttributeSelect> {
     const [attribute] = await this.databaseService.db
       .select()
       .from(attributes)
@@ -39,7 +39,7 @@ export class AttributesRepository {
     return attribute;
   }
 
-  async delete(id: string): Promise<Attribute> {
+  async delete(id: string): Promise<AttributeSelect> {
     const [attribute] = await this.databaseService.db
       .delete(attributes)
       .where(eq(attributes.id, id))

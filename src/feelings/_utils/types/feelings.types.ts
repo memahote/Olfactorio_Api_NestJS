@@ -1,5 +1,5 @@
-import { feelings } from "src/feelings/feelings.schema";
+import { feelings } from 'src/feelings/feelings.schema';
 
-export type Feelings = typeof feelings.$inferSelect;
+export type FeelingInsert = typeof feelings.$inferInsert;
 
-export type CreateFeelings = typeof feelings.$inferInsert;
+export type FeelingSelect = typeof feelings.$inferSelect;

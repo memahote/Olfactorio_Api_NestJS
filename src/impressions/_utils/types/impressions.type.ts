@@ -1,5 +1,5 @@
-import { impressions } from "src/impressions/impressions.schema";
+import { impressions } from 'src/impressions/impressions.schema';
 
-export type Impression = typeof impressions.$inferSelect;
+export type ImpressionInsert = typeof impressions.$inferInsert;
 
-export type CreateImpression  = typeof impressions.$inferInsert;
+export type ImpressionSelect = typeof impressions.$inferSelect;

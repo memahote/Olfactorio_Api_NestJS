@@ -1,14 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { DatabaseService } from 'src/database/database.service';
-import { Atmosphere, CreateAtmosphere } from './_utils/types/atmospheres.types';
 import { atmospheres } from './atmospheres.schema';
 import { and, eq, isNull, or } from 'drizzle-orm';
+import { AtmosphereInsert, AtmosphereSelect } from './_utils/types/atmospheres.types';
 
 @Injectable()
 export class AtmospheresRepository {
   constructor(private readonly databaseService: DatabaseService) {}
 
-  async create(atmosphereData: CreateAtmosphere): Promise<Atmosphere> {
+  async create(atmosphereData: AtmosphereInsert): Promise<AtmosphereSelect> {
     const [atmosphere] = await this.databaseService.db
       .insert(atmospheres)
       .values(atmosphereData)
@@ -17,25 +17,25 @@ export class AtmospheresRepository {
     return atmosphere;
   }
 
-  async findAllUserAtmospheres(userId: string): Promise<Atmosphere[]> {
+  async findAllUserAtmospheres(userId: string): Promise<AtmosphereSelect[]> {
     return this.databaseService.db
       .select()
       .from(atmospheres)
       .where(or(isNull(atmospheres.ownerId), eq(atmospheres.ownerId, userId)));
   }
 
-  async findAllDefault(): Promise<Atmosphere[]> {
+  async findAllDefault(): Promise<AtmosphereSelect[]> {
     return this.databaseService.db
       .select()
       .from(atmospheres)
       .where(isNull(atmospheres.ownerId));
   }
 
-  async findAllAtmosphere(): Promise<Atmosphere[]> {
+  async findAllAtmosphere(): Promise<AtmosphereSelect[]> {
     return this.databaseService.db.select().from(atmospheres);
   }
 
-  async findById(id: string): Promise<Atmosphere> {
+  async findById(id: string): Promise<AtmosphereSelect> {
     const [atmosphere] = await this.databaseService.db
       .select()
       .from(atmospheres)
@@ -47,7 +47,7 @@ export class AtmospheresRepository {
   async findVisibleById(
     id: string,
     userId: string,
-  ): Promise<Atmosphere | undefined> {
+  ): Promise<AtmosphereSelect > {
     const [atmosphere] = await this.databaseService.db
       .select()
       .from(atmospheres)
@@ -64,7 +64,7 @@ export class AtmospheresRepository {
   async findByOwnerIdAndName(
     ownerId: string,
     name: string,
-  ): Promise<Atmosphere> {
+  ): Promise<AtmosphereSelect> {
     const [atmosphere] = await this.databaseService.db
       .select()
       .from(atmospheres)
@@ -84,7 +84,7 @@ export class AtmospheresRepository {
     return atmosphere;
   }
 
-  async delete(id: string, userId: string): Promise<Atmosphere> {
+  async delete(id: string, userId: string): Promise<AtmosphereSelect> {
     const [atmosphere] = await this.databaseService.db
       .delete(atmospheres)
       .where(and(eq(atmospheres.id, id), eq(atmospheres.ownerId, userId)))
@@ -93,7 +93,7 @@ export class AtmospheresRepository {
     return atmosphere;
   }
 
-  async deleteDefault(id: string): Promise<Atmosphere> {
+  async deleteDefault(id: string): Promise<AtmosphereSelect> {
     const [atmosphere] = await this.databaseService.db
       .delete(atmospheres)
       .where(and(eq(atmospheres.id, id), isNull(atmospheres.ownerId)))
