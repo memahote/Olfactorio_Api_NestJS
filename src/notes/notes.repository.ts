@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { DatabaseService } from 'src/database/database.service';
 import { NoteInsert, NoteSelect } from './_utils/types/notes.types';
-import { Notes } from './notes.schema';
+import { notes } from './notes.schema';
 import { eq, and, isNull } from 'drizzle-orm';
 import { files } from 'src/files/files.schema';
 
@@ -11,7 +11,7 @@ export class NotesRepository {
 
   async create(note: NoteInsert): Promise<NoteSelect> {
     const [createdNote] = await this.databaseService.db
-      .insert(Notes)
+      .insert(notes)
       .values(note)
       .returning();
 
@@ -24,8 +24,8 @@ export class NotesRepository {
   ): Promise<NoteSelect> {
     const [note] = await this.databaseService.db
       .select()
-      .from(Notes)
-      .where(and(eq(Notes.name, name), eq(Notes.familyId, familyId)))
+      .from(notes)
+      .where(and(eq(notes.name, name), eq(notes.familyId, familyId)))
       .limit(1);
 
     return note;
@@ -34,12 +34,12 @@ export class NotesRepository {
   async findNoteById(id: string) {
     const [note] = await this.databaseService.db
       .select({
-        note: Notes,
+        note: notes,
         file: files,
       })
-      .from(Notes)
-      .innerJoin(files, eq(Notes.fileId, files.id))
-      .where(eq(Notes.id, id));
+      .from(notes)
+      .innerJoin(files, eq(notes.fileId, files.id))
+      .where(eq(notes.id, id));
 
     return note;
   }
@@ -47,35 +47,35 @@ export class NotesRepository {
   async findNoteVariations(noteId: string) {
     const noteVariations = await this.databaseService.db
       .select({
-        note: Notes,
+        note: notes,
         file: files,
       })
-      .from(Notes)
-      .innerJoin(files, eq(Notes.fileId, files.id))
-      .where(eq(Notes.parentNoteId, noteId));
+      .from(notes)
+      .innerJoin(files, eq(notes.fileId, files.id))
+      .where(eq(notes.parentNoteId, noteId));
 
     return noteVariations;
   }
 
   async findNotesByFamilyId(familyId: string) {
-    const notes = this.databaseService.db
+    const noteList = this.databaseService.db
       .select({
-        note: Notes,
+        note: notes,
         file: files,
       })
-      .from(Notes)
-      .innerJoin(files, eq(Notes.fileId, files.id))
-      .where(and(eq(Notes.familyId, familyId), isNull(Notes.parentNoteId)));
+      .from(notes)
+      .innerJoin(files, eq(notes.fileId, files.id))
+      .where(and(eq(notes.familyId, familyId), isNull(notes.parentNoteId)));
 
-    return notes;
+    return noteList;
   }
 
   async deleteNote(id: string) {
     const [note] = await this.databaseService.db
-      .delete(Notes)
-      .where(eq(Notes.id, id))
+      .delete(notes)
+      .where(eq(notes.id, id))
       .returning();
-    
+
     return note;
   }
 }
