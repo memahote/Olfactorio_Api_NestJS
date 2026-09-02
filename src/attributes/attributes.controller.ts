@@ -12,6 +12,8 @@ import {
 import { AttributesService } from './attributes.service';
 import { CreateAttributeDto } from './_utils/dtos/requests/create-attribute.dto';
 import { GetAttributeDto } from './_utils/dtos/responses/get-attribute.dto';
+import { Roles } from 'src/_utils/decorators/roles.decorator';
+import { RoleEnum } from 'src/roles/utils/enums/role.enum';
 
 @ApiTags('Attributes')
 @Controller('attributes')
@@ -19,6 +21,7 @@ export class AttributesController {
   constructor(private readonly attributesService: AttributesService) {}
 
   @Post()
+  @Roles(RoleEnum.ADMIN)
   @ApiOperation({
     summary: 'Create an attribute',
   })
@@ -68,6 +71,7 @@ export class AttributesController {
   }
 
   @Delete(':id')
+  @Roles(RoleEnum.ADMIN)
   @ApiOperation({
     summary: 'Delete an attribute',
   })

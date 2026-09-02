@@ -1,6 +1,5 @@
-import { atmospheres } from "src/atmospheres/atmospheres.schema";
+import { atmospheres } from 'src/atmospheres/atmospheres.schema';
 
+export type AtmosphereInsert = typeof atmospheres.$inferInsert;
 
-export type Atmosphere = typeof atmospheres.$inferSelect
-
-export type CreateAtmosphere  = typeof atmospheres.$inferInsert;
+export type AtmosphereSelect = typeof atmospheres.$inferSelect;

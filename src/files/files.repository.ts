@@ -3,7 +3,7 @@ import { eq } from 'drizzle-orm';
 
 import { DatabaseService } from 'src/database/database.service';
 import { files } from './files.schema';
-import { Files } from './_utils/types/files.types';
+import { FileInsert } from './_utils/types/files.types';
 
 @Injectable()
 export class FilesRepository {
@@ -11,7 +11,7 @@ export class FilesRepository {
     private readonly databaseService: DatabaseService,
   ) {}
 
-  async create(data: typeof files.$inferInsert) {
+  async create(data: FileInsert) {
     const [file] = await this.databaseService.db
       .insert(files)
       .values(data)

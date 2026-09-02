@@ -1,14 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { DatabaseService } from 'src/database/database.service';
-import { CreateImpression, Impression } from './_utils/types/impressions.type';
 import { impressions } from './impressions.schema';
 import { eq } from 'drizzle-orm';
+import { ImpressionInsert, ImpressionSelect } from './_utils/types/impressions.type';
 
 @Injectable()
 export class ImpressionsRepository {
   constructor(private readonly databaseService: DatabaseService) {}
 
-  async create(impressionData: CreateImpression): Promise<Impression> {
+  async create(impressionData: ImpressionInsert): Promise<ImpressionSelect> {
     const [impression] = await this.databaseService.db
       .insert(impressions)
       .values(impressionData)
@@ -17,11 +17,11 @@ export class ImpressionsRepository {
     return impression;
   }
 
-  async findAll(): Promise<Impression[]> {
+  async findAll(): Promise<ImpressionSelect[]> {
     return this.databaseService.db.select().from(impressions);
   }
 
-  async findById(id: string): Promise<Impression> {
+  async findById(id: string): Promise<ImpressionSelect> {
     const [impression] = await this.databaseService.db
       .select()
       .from(impressions)
@@ -30,7 +30,7 @@ export class ImpressionsRepository {
     return impression;
   }
 
-  async findByDescription(description: string): Promise<Impression> {
+  async findByDescription(description: string): Promise<ImpressionSelect> {
      const [impression] = await this.databaseService.db
       .select()
       .from(impressions)

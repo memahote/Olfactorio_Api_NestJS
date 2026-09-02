@@ -23,6 +23,8 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { GetOlfactiveFamilyDto } from './_utils/dtos/responses/get-olfactive-family.dto';
+import { Roles } from 'src/_utils/decorators/roles.decorator';
+import { RoleEnum } from 'src/roles/utils/enums/role.enum';
 
 @ApiTags('Olfactive Families')
 @Controller('olfactive-family')
@@ -32,6 +34,7 @@ export class OlfactiveFamiliesController {
   ) {}
 
   @Post()
+  @Roles(RoleEnum.ADMIN)
   @FormDataRequest()
   @ApiConsumes('multipart/form-data')
   @ApiBody({
@@ -81,11 +84,9 @@ export class OlfactiveFamiliesController {
   @ApiConflictResponse({
     description: 'Olfactive family already exist',
   })
-  create(
-    @Body() createOlfactiveFamilyDto: CreateOlfactiveFamilyDto
-  ) {
+  create(@Body() createOlfactiveFamilyDto: CreateOlfactiveFamilyDto) {
     return this.olfactiveFamiliesService.createOlfactiveFamily(
-      createOlfactiveFamilyDto
+      createOlfactiveFamilyDto,
     );
   }
 

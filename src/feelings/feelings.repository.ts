@@ -1,15 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { DatabaseService } from 'src/database/database.service';
-import { CreateFeelings, Feelings } from './_utils/types/feelings.types';
 import { feelings } from './feelings.schema';
 import { and, eq } from 'drizzle-orm';
 import { Exceptions } from 'src/_utils/exceptions/exceptions';
+import { FeelingInsert, FeelingSelect } from './_utils/types/feelings.types';
 
 @Injectable()
 export class FeelingsRepository {
   constructor(private readonly databaseService: DatabaseService) {}
 
-  async create(feelingData: CreateFeelings): Promise<Feelings> {
+  async create(feelingData: FeelingInsert): Promise<FeelingSelect> {
     const [feeling] = await this.databaseService.db
       .insert(feelings)
       .values(feelingData)
@@ -18,11 +18,11 @@ export class FeelingsRepository {
     return feeling;
   }
 
-  async findAll(): Promise<Feelings[]> {
+  async findAll(): Promise<FeelingSelect[]> {
     return this.databaseService.db.select().from(feelings);
   }
 
-  async findById(id: string): Promise<Feelings> {
+  async findById(id: string): Promise<FeelingSelect> {
     const [feeling] = await this.databaseService.db
       .select()
       .from(feelings)
@@ -30,7 +30,7 @@ export class FeelingsRepository {
     return feeling;
   }
 
-  async findByUserIdAndName(feelingData: CreateFeelings) {
+  async findByUserIdAndName(feelingData: FeelingInsert) {
     const [feeling] = await this.databaseService.db
       .select()
       .from(feelings)
