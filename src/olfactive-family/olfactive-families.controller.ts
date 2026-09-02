@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   Param,
+  ParseUUIDPipe,
   Post,
   UploadedFile,
 } from '@nestjs/common';
@@ -119,7 +120,7 @@ export class OlfactiveFamiliesController {
   @ApiNotFoundResponse({
     description: 'Olfactive family not found',
   })
-  async getOlfactiveFamilyById(@Param('id') id: string) {
+  async getOlfactiveFamilyById(@Param('id', ParseUUIDPipe) id: string) {
     return this.olfactiveFamiliesService.getOlfactiveFamilyById(id);
   }
 
@@ -139,7 +140,7 @@ export class OlfactiveFamiliesController {
   // @ApiNotFoundResponse({
   //   description: 'Olfactive family not found',
   // })
-  // async deleteOlfactiveFamily(@Param('id') id: string) {
+  // async deleteOlfactiveFamily(@Param('id', ParseUUIDPipe) id: string) {
   //   return this.olfactiveFamiliesService.deleteOlfactiveFamily(id);
   // }
 }

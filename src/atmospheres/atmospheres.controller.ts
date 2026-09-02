@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   Param,
+  ParseUUIDPipe,
   Post,
   Req,
 } from '@nestjs/common';
@@ -41,7 +42,7 @@ export class AtmospheresController {
 
   @Delete('admin/:id')
   @Roles(RoleEnum.ADMIN)
-  deleteDefault(@Param('id') id: string) {
+  deleteDefault(@Param('id', ParseUUIDPipe) id: string) {
     return this.atmospheresService.deleteDefault(id);
   }
 
@@ -58,7 +59,7 @@ export class AtmospheresController {
   }
 
   @Delete(':id')
-  delete(@CurrentUser() user: GetUserDto, @Param('id') id: string) {
+  delete(@CurrentUser() user: GetUserDto, @Param('id', ParseUUIDPipe) id: string) {
     return this.atmospheresService.delete(id, user.id);
   }
 }

@@ -42,6 +42,7 @@ export class NotesController {
   }
 
   @Delete(':id')
+  @Roles(RoleEnum.ADMIN)
   deleteNote(@Param('id', ParseUUIDPipe) id: string) {
     return this.notesService.deleteNote(id);
   }
