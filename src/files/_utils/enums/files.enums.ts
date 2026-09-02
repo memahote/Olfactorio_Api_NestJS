@@ -1,8 +1,8 @@
 export const FilesDirectoryEnum = {
-  NOTE: 'note',
-  AMBIANCE: 'ambiance',
+  NOTES: 'notes',
+  AMBIANCES: 'ambiances',
   OLFACTIVE_FAMILIES: 'olfactive_families',
-  ATMOSPHERE: 'atmosphere'
+  ATMOSPHERES: 'atmospheres'
 } as const satisfies Record<string, string>;
 
 export const FilesDirectoryPrivacyEnum = {

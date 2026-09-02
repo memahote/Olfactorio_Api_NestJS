@@ -1,20 +1,48 @@
-import { Controller, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  ParseUUIDPipe,
+  Post,
+} from '@nestjs/common';
 import { NotesService } from './notes.service';
 import { CreateNoteDto } from './_utils/dtos/requests/create-note.dto';
+import { Roles } from 'src/_utils/decorators/roles.decorator';
+import { RoleEnum } from 'src/roles/utils/enums/role.enum';
+import { FormDataRequest } from 'nestjs-form-data';
 
 @Controller('notes')
 export class NotesController {
-  constructor(private readonly notesService: NotesService) { }
-  
+  constructor(private readonly notesService: NotesService) {}
+
   @Post()
-  createNote(createNoteDto: CreateNoteDto) {
+  @Roles(RoleEnum.ADMIN)
+  @FormDataRequest()
+  createNote(@Body() createNoteDto: CreateNoteDto) {
     return this.notesService.createNote(createNoteDto);
   }
 
-
   //GetNotesByFamilyId ->on recupere seulement les note d'une famille jamais toute les note existante
 
-  //GetNoteById -> pour le detail de la note
-  //GetNoteVariation -> toute les notes avec le meme parentID = variation de celle ci
+  @Get(':id')
+  findNoteById(@Param('id', ParseUUIDPipe) id: string) {
+    return this.notesService.findNoteById(id);
+  }
 
+  @Get('variations/:id')
+  findNoteVariations(@Param('id', ParseUUIDPipe) id: string) {
+    return this.notesService.findNoteVariations(id);
+  }
+
+  @Get('/family/:id')
+  findNotesByFamilyId(@Param('id', ParseUUIDPipe) id: string) {
+    return this.notesService.findNotesByFamilyId(id);
+  }
+
+  @Delete(':id')
+  deleteNote(@Param('id', ParseUUIDPipe) id: string) {
+    return this.notesService.deleteNote(id);
+  }
 }

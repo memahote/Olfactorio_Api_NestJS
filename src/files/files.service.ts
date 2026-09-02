@@ -12,7 +12,7 @@ import { S3_CLIENT_TOKEN } from './files.provider';
 import { FilesMapper } from './files.mapper';
 import { FilesDirectoryPrivacyValues } from './_utils/types/files-directory-privacy-values.types';
 import { FilesDirectoryValues } from './_utils/types/files-directory-values.types';
-import { Files } from './_utils/types/files.types';
+import { FileInsert, FileSelect } from './_utils/types/files.types';
 import { FilesRepository } from './files.repository';
 import { Exceptions } from 'src/_utils/exceptions/exceptions';
 
@@ -37,7 +37,7 @@ export class FilesService {
     file: MemoryStoredFile,
     filesPrivacyDirectoryValues: FilesDirectoryPrivacyValues,
     filesDirectoryType: FilesDirectoryValues,
-  ): Promise<Files> {
+  ): Promise<FileSelect> {
     const key = this.filesMapper.buildFileKey(
       filesPrivacyDirectoryValues,
       filesDirectoryType,
@@ -65,7 +65,7 @@ export class FilesService {
     return this.filesRepository.findById(id);
   }
 
-  async deleteFile(file: Files) {
+  async deleteFile(file: FileSelect) {
     await this.filesRepository.delete(file.id);
     const deletedFile = new DeleteObjectCommand({
       Bucket: this.BUCKET_NAME,
@@ -93,6 +93,14 @@ export class FilesService {
       throw Exceptions.NOT_FOUND('File');
     }
 
+    return this.filesMapper.buildFilePublicUrl(
+      this.RUSTFS_URL,
+      this.BUCKET_NAME,
+      file.key,
+    );
+  }
+
+  buildPublicUrl(file: FileSelect): string {
     return this.filesMapper.buildFilePublicUrl(
       this.RUSTFS_URL,
       this.BUCKET_NAME,

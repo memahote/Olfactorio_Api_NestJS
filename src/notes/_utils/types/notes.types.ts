@@ -1,5 +1,5 @@
-import { notes } from 'src/notes/notes.schema';
+import { Notes } from 'src/notes/notes.schema';
 
-export type NoteInsert = typeof notes.$inferInsert;
+export type NoteInsert = typeof Notes.$inferInsert;
 
-export type NoteSelect = typeof notes.$inferSelect;
+export type NoteSelect = typeof Notes.$inferSelect;

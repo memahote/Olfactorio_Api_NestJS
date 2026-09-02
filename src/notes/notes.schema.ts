@@ -12,15 +12,13 @@ import { files } from 'src/files/files.schema';
 import { olfactiveFamilies } from 'src/olfactive-family/olfactive-families.schema';
 import { NotePyramidLevelEnum } from './_utils/enums/note-pyramid-level.enum';
 
-export const notePyramidLevelEnum = pgEnum(
-  'note_pyramid_level',
-  Object.values(NotePyramidLevelEnum) as [
-    string,
-    ...string[],
-  ],
-);
+export const notePyramidLevelEnum = pgEnum('note_pyramid_level', [
+  NotePyramidLevelEnum.TOP,
+  NotePyramidLevelEnum.MIDDLE,
+  NotePyramidLevelEnum.BASE,
+]);
 
-export const notes = pgTable(
+export const Notes = pgTable(
   'notes',
   {
     id: uuid().defaultRandom().primaryKey(),
@@ -39,18 +37,20 @@ export const notes = pgTable(
 
     familyId: uuid()
       .notNull()
-      .references(() => olfactiveFamilies.id),
+      .references(() => olfactiveFamilies.id, {
+        onDelete: 'cascade',
+      }),
     fileId: uuid()
       .notNull()
       .references(() => files.id),
-    parent_note_id: uuid('parent_note_id'),
+    parentNoteId: uuid('parent_note_id'),
   },
   (table) => [
     foreignKey({
-      columns: [table.parent_note_id],
+      columns: [table.parentNoteId],
       foreignColumns: [table.id],
       name: 'notes_parent_note_id',
-    }),
+    }).onDelete('cascade'),
     unique().on(table.name, table.familyId),
   ],
 );

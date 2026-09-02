@@ -2,14 +2,14 @@ import { Injectable } from '@nestjs/common';
 import { GetOlfactiveFamilyDto } from './_utils/dtos/responses/get-olfactive-family.dto';
 import { CreatedOlfactiveFamilies, OlfactiveFamilies } from './_utils/types/create-olfactive-family.types';
 import { CreateOlfactiveFamilyDto } from './_utils/dtos/requests/create-olfactive-family.dto';
-import { Attribute } from 'src/attributes/_utils/types/attributes.types';
+import { AttributeSelect } from 'src/attributes/_utils/types/attributes.types';
 
 @Injectable()
 export class OlfactiveFamiliesMapper {
   toGetOlfactiveFamilyDto = (
     olfactiveFamily: OlfactiveFamilies,
     imageUrl: string,
-    attributes: Attribute[]
+    attributes: AttributeSelect[]
   ): GetOlfactiveFamilyDto => ({
       id: olfactiveFamily.id,
       name: olfactiveFamily.name,

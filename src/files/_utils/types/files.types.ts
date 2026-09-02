@@ -1,3 +1,5 @@
-import { files } from "src/files/files.schema";
+import { files } from 'src/files/files.schema';
 
-export type FileInsert = typeof files.$inferInsert
+export type FileInsert = typeof files.$inferInsert;
+
+export type FileSelect = typeof files.$inferSelect;
