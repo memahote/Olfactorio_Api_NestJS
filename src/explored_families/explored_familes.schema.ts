@@ -22,10 +22,8 @@ export const exploredFamilies = pgTable(
       .notNull(),
   },
   (table) => [
-    {
-      pk: primaryKey({
-        columns: [table.userId, table.familyId],
-      }),
-    },
+    primaryKey({
+      columns: [table.userId, table.familyId],
+    }),
   ],
 );

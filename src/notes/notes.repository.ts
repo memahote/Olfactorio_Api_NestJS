@@ -2,8 +2,11 @@ import { Injectable } from '@nestjs/common';
 import { DatabaseService } from 'src/database/database.service';
 import { NoteInsert, NoteSelect } from './_utils/types/notes.types';
 import { notes } from './notes.schema';
-import { eq, and, isNull } from 'drizzle-orm';
+import { eq, and, isNull, sql } from 'drizzle-orm';
 import { files } from 'src/files/files.schema';
+import { noteAttributes } from 'src/note_attributes/note_attributes.schema';
+import { attributes } from 'src/attributes/attributes.schema';
+import { AttributeSelect } from 'src/attributes/_utils/types/attributes.types';
 
 @Injectable()
 export class NotesRepository {
@@ -36,10 +39,16 @@ export class NotesRepository {
       .select({
         note: notes,
         file: files,
+        attributes: sql<AttributeSelect[]>`
+      json_agg(${attributes})
+    `,
       })
       .from(notes)
       .innerJoin(files, eq(notes.fileId, files.id))
-      .where(eq(notes.id, id));
+      .innerJoin(noteAttributes, eq(noteAttributes.noteId, notes.id))
+      .innerJoin(attributes, eq(attributes.id, noteAttributes.attributeId))
+      .where(eq(notes.id, id))
+      .groupBy(notes.id, files.id);
 
     return note;
   }
@@ -49,10 +58,16 @@ export class NotesRepository {
       .select({
         note: notes,
         file: files,
+        attributes: sql<AttributeSelect[]>`
+      json_agg(${attributes})
+    `,
       })
       .from(notes)
       .innerJoin(files, eq(notes.fileId, files.id))
-      .where(eq(notes.parentNoteId, noteId));
+      .innerJoin(noteAttributes, eq(noteAttributes.noteId, notes.id))
+      .innerJoin(attributes, eq(attributes.id, noteAttributes.attributeId))
+      .where(eq(notes.parentNoteId, noteId))
+      .groupBy(notes.id, files.id);
 
     return noteVariations;
   }
@@ -62,10 +77,16 @@ export class NotesRepository {
       .select({
         note: notes,
         file: files,
+        attributes: sql<AttributeSelect[]>`
+      json_agg(${attributes})
+    `,
       })
       .from(notes)
       .innerJoin(files, eq(notes.fileId, files.id))
-      .where(and(eq(notes.familyId, familyId), isNull(notes.parentNoteId)));
+      .innerJoin(noteAttributes, eq(noteAttributes.noteId, notes.id))
+      .innerJoin(attributes, eq(attributes.id, noteAttributes.attributeId))
+      .where(and(eq(notes.familyId, familyId), isNull(notes.parentNoteId)))
+      .groupBy(notes.id, files.id);
 
     return noteList;
   }

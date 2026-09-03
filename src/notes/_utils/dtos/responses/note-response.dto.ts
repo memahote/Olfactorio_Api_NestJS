@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { NotePyramidLevelType } from '../../types/note-pyramid-level.type';
+import { AttributeSelect } from 'src/attributes/_utils/types/attributes.types';
 
 export class NoteResponseDto {
   @ApiProperty({ example: 'd1231a46-41a3-48c6-a192-23bef2fca311' })
@@ -31,4 +32,6 @@ export class NoteResponseDto {
       "Les notes de cœur constituent l'identité du parfum. Elles se révèlent après l'évaporation des notes de tête et persistent plusieurs heures avant de laisser place aux notes de fond",
   })
   pyramidDescription: string;
+
+  attributes: AttributeSelect[]
 }
