@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { refreshToken } from './refresh-token.schema';
 import { CreateRefreshToken } from './utils/types/create-refresh-token.type';
 import { DatabaseService } from 'src/database/database.service';
-import { eq } from 'drizzle-orm';
+import { eq, lt } from 'drizzle-orm';
 
 @Injectable()
 export class RefreshTokenRepository {
@@ -34,6 +34,11 @@ export class RefreshTokenRepository {
       })
       .where(eq(refreshToken.id, id))
       .returning();
-    
+  }
+
+  async deleteExpired() {
+    return this.databaseService.db
+      .delete(refreshToken)
+      .where(lt(refreshToken.expiresAt, new Date()));
   }
 }
