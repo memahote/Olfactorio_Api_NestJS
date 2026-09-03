@@ -6,10 +6,11 @@ import { NotesRepository } from './notes.repository';
 import { NotesMapper } from './notes.mapper';
 import { FilesModule } from 'src/files/files.module';
 import { ExploredFamiliesModule } from 'src/explored_families/explored_families.module';
+import { ExploredNotesModule } from 'src/explored_notes/explored_notes.module';
 
 @Module({
   controllers: [NotesController],
   providers: [NotesService, NotesRepository, NotesMapper],
-  imports: [DatabaseModule, FilesModule, ExploredFamiliesModule]
+  imports: [DatabaseModule, FilesModule, ExploredFamiliesModule, ExploredNotesModule]
 })
 export class NotesModule {}

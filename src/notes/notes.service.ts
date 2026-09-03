@@ -10,6 +10,7 @@ import {
   FilesDirectoryPrivacyEnum,
 } from 'src/files/_utils/enums/files.enums';
 import { ExploredFamiliesService } from 'src/explored_families/explored_families.service';
+import { ExploredNotesService } from 'src/explored_notes/explored_notes.service';
 
 @Injectable()
 export class NotesService {
@@ -18,6 +19,7 @@ export class NotesService {
     private readonly filesService: FilesService,
     private readonly notesMapper: NotesMapper,
     private readonly exploredFamiliesService: ExploredFamiliesService,
+    private readonly exploredNotesService: ExploredNotesService,
   ) {}
 
   async createNote(createNoteDto: CreateNoteDto): Promise<NoteResponseDto> {
@@ -48,12 +50,14 @@ export class NotesService {
     }
   }
 
-  async findNoteById(id: string): Promise<NoteResponseDto> {
-    const note = await this.notesRepository.findNoteById(id);
+  async findNoteById(noteId: string, userId: string): Promise<NoteResponseDto> {
+    const note = await this.notesRepository.findNoteById(noteId);
 
     if (!note) {
       throw Exceptions.NOT_FOUND('Note');
     }
+
+    await this.exploredNotesService.markAsExplored(userId, noteId);
 
     return this.notesMapper.toResponse(note.note, note.file);
   }
@@ -82,7 +86,7 @@ export class NotesService {
       throw Exceptions.NOT_FOUND('Notes');
     }
 
-    await this.exploredFamiliesService.explore(userId, familyId);
+    await this.exploredFamiliesService.markAsExplored(userId, familyId);
 
     return notes.map((note) =>
       this.notesMapper.toResponse(note.note, note.file),
