@@ -38,40 +38,6 @@ export class OlfactiveFamiliesController {
   @Roles(RoleEnum.ADMIN)
   @FormDataRequest()
   @ApiConsumes('multipart/form-data')
-  @ApiBody({
-    schema: {
-      type: 'object',
-      properties: {
-        name: {
-          type: 'string',
-          example: 'Woody',
-        },
-        description: {
-          type: 'string',
-          example: 'A warm and woody olfactive family.',
-        },
-        primaryColor: {
-          type: 'string',
-          example: '#8B4513',
-        },
-        secondaryColor: {
-          type: 'string',
-          example: '#D2691E',
-        },
-        image: {
-          type: 'string',
-          format: 'binary',
-        },
-      },
-      required: [
-        'name',
-        'description',
-        'primaryColor',
-        'secondaryColor',
-        'image',
-      ],
-    },
-  })
   @ApiOperation({
     summary: 'Create an olfactive family',
   })

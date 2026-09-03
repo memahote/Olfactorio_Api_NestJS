@@ -1,17 +1,22 @@
 import { Injectable } from '@nestjs/common';
-import { eq } from 'drizzle-orm';
+import { eq, sql } from 'drizzle-orm';
 import { DatabaseService } from 'src/database/database.service';
 import { olfactiveFamilies } from './olfactive-families.schema';
 import { familyAttributes } from 'src/family-attributes/family-attributes.schema';
 import { attributes } from 'src/attributes/attributes.schema';
-import { CreatedOlfactiveFamilies } from './_utils/types/create-olfactive-family.types';
+import { files } from 'src/files/files.schema';
+import { AttributeSelect } from 'src/attributes/_utils/types/attributes.types';
+import {
+  OlfactiveFamilyInsert,
+  OlfactiveFamilyWithAttributesAndFile,
+} from './_utils/types/create-olfactive-family.types';
 
 @Injectable()
 export class OlfactiveFamiliesRepository {
   constructor(private readonly databaseService: DatabaseService) {}
 
   async createWithAttributes(
-    familyData: CreatedOlfactiveFamilies,
+    familyData: OlfactiveFamilyInsert,
     attributeIds: string[],
   ) {
     return this.databaseService.db.transaction(async (tx) => {
@@ -47,54 +52,57 @@ export class OlfactiveFamiliesRepository {
     });
   }
 
-  async findAllWithAttributes() {
-    const rows = await this.databaseService.db
-      .select({
-        family: olfactiveFamilies,
-        attribute: attributes,
-      })
-      .from(olfactiveFamilies)
-      .innerJoin(
-        familyAttributes,
-        eq(familyAttributes.familyId, olfactiveFamilies.id),
-      )
-      .innerJoin(attributes, eq(attributes.id, familyAttributes.attributeId));
-
-    const families = new Map<
-      string,
-      {
-        family: typeof olfactiveFamilies.$inferSelect;
-        attributes: (typeof attributes.$inferSelect)[];
-      }
-    >();
-
-    for (const row of rows) {
-      if (!families.has(row.family.id)) {
-        families.set(row.family.id, {
-          family: row.family,
-          attributes: [],
-        });
-      }
-
-      families.get(row.family.id)!.attributes.push(row.attribute);
-    }
-
-    return Array.from(families.values());
-  }
-
-  async findByIdWithAttributes(id: string) {
+  async findAllWithAttributes(): Promise<
+    OlfactiveFamilyWithAttributesAndFile[]
+  > {
     return this.databaseService.db
       .select({
-        family: olfactiveFamilies,
-        attribute: attributes,
+        id: olfactiveFamilies.id,
+        name: olfactiveFamilies.name,
+        description: olfactiveFamilies.description,
+        primaryColor: olfactiveFamilies.primaryColor,
+        secondaryColor: olfactiveFamilies.secondaryColor,
+        file: files,
+        attributes: sql<AttributeSelect[]>`
+        json_agg(${attributes})
+      `,
       })
       .from(olfactiveFamilies)
+      .innerJoin(files, eq(olfactiveFamilies.fileId, files.id))
       .innerJoin(
         familyAttributes,
         eq(familyAttributes.familyId, olfactiveFamilies.id),
       )
       .innerJoin(attributes, eq(attributes.id, familyAttributes.attributeId))
-      .where(eq(olfactiveFamilies.id, id));
+      .groupBy(olfactiveFamilies.id, files.id);
+  }
+
+  async findByIdWithAttributes(
+    id: string,
+  ): Promise<OlfactiveFamilyWithAttributesAndFile> {
+    const [family] = await this.databaseService.db
+      .select({
+        id: olfactiveFamilies.id,
+        name: olfactiveFamilies.name,
+        description: olfactiveFamilies.description,
+        primaryColor: olfactiveFamilies.primaryColor,
+        secondaryColor: olfactiveFamilies.secondaryColor,
+        file: files,
+        attributes: sql<AttributeSelect[]>`
+        json_agg(${attributes})
+      `,
+      })
+      .from(olfactiveFamilies)
+      .innerJoin(files, eq(olfactiveFamilies.fileId, files.id))
+      .innerJoin(
+        familyAttributes,
+        eq(familyAttributes.familyId, olfactiveFamilies.id),
+      )
+      .innerJoin(attributes, eq(attributes.id, familyAttributes.attributeId))
+      .where(eq(olfactiveFamilies.id, id))
+      .groupBy(olfactiveFamilies.id, files.id);
+
+    return family;
   }
 
   async findByName(name: string) {

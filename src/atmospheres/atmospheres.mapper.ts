@@ -1,8 +1,14 @@
+import { FilesService } from 'src/files/files.service';
 import { CreateAtmosphereDto } from './_utils/dtos/requests/create-atmosphere.dto';
 import { GetAtmosphereDto } from './_utils/dtos/responses/get-atmosphere.dto';
-import { AtmosphereInsert, AtmosphereSelect } from './_utils/types/atmospheres.types';
+import {
+  AtmosphereInsert,
+  AtmosphereWithFile,
+} from './_utils/types/atmospheres.types';
+import { FileSelect } from 'src/files/_utils/types/files.types';
 
 export class AtmospheresMapper {
+  constructor(private readonly filesService: FilesService) {}
   toCreateAtmosphereData = (
     atmosphereDto: CreateAtmosphereDto,
     ownerId: string | null,
@@ -13,10 +19,12 @@ export class AtmospheresMapper {
     fileId: fileId,
   });
 
-  toGetAtmosphereDto = (atmosphere: AtmosphereSelect, imageUrl: string): GetAtmosphereDto => ({
+  toGetAtmosphereDto = (
+    atmosphere: AtmosphereWithFile
+  ): GetAtmosphereDto => ({
     id: atmosphere.id,
     name: atmosphere.name,
     ownerId: atmosphere.ownerId,
-    imageUrl: imageUrl
-  })
+    imageUrl: this.filesService.buildPublicUrl(atmosphere.file),
+  });
 }

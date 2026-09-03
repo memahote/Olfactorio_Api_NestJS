@@ -2,7 +2,11 @@ import { Injectable } from '@nestjs/common';
 import { DatabaseService } from 'src/database/database.service';
 import { atmospheres } from './atmospheres.schema';
 import { and, eq, isNull, or } from 'drizzle-orm';
-import { AtmosphereInsert, AtmosphereSelect } from './_utils/types/atmospheres.types';
+import {
+  AtmosphereInsert,
+  AtmosphereSelect,
+} from './_utils/types/atmospheres.types';
+import { files } from 'src/files/files.schema';
 
 @Injectable()
 export class AtmospheresRepository {
@@ -17,40 +21,70 @@ export class AtmospheresRepository {
     return atmosphere;
   }
 
-  async findAllUserAtmospheres(userId: string): Promise<AtmosphereSelect[]> {
+  async findAllUserAtmospheres(userId: string) {
     return this.databaseService.db
-      .select()
+      .select({
+        id: atmospheres.id,
+        name: atmospheres.name,
+        ownerId: atmospheres.ownerId,
+        fileId: atmospheres.fileId,
+        file: files
+      })
       .from(atmospheres)
+      .innerJoin(files, eq(atmospheres.fileId, files.id))
       .where(or(isNull(atmospheres.ownerId), eq(atmospheres.ownerId, userId)));
   }
 
-  async findAllDefault(): Promise<AtmosphereSelect[]> {
+  async findAllDefault() {
     return this.databaseService.db
-      .select()
+      .select({
+        id: atmospheres.id,
+        name: atmospheres.name,
+        ownerId: atmospheres.ownerId,
+        file: files
+      })
       .from(atmospheres)
+      .innerJoin(files, eq(atmospheres.fileId, files.id))
       .where(isNull(atmospheres.ownerId));
   }
 
-  async findAllAtmosphere(): Promise<AtmosphereSelect[]> {
-    return this.databaseService.db.select().from(atmospheres);
+  async findAllAtmosphere() {
+    return this.databaseService.db
+      .select({
+        id: atmospheres.id,
+        name: atmospheres.name,
+        ownerId: atmospheres.ownerId,
+        file: files
+      })
+      .from(atmospheres)
+      .innerJoin(files, eq(atmospheres.fileId, files.id));
   }
 
-  async findById(id: string): Promise<AtmosphereSelect> {
+  async findById(id: string) {
     const [atmosphere] = await this.databaseService.db
-      .select()
+      .select({
+        id: atmospheres.id,
+        name: atmospheres.name,
+        ownerId: atmospheres.ownerId,
+        file: files
+      })
       .from(atmospheres)
+      .innerJoin(files, eq(atmospheres.fileId, files.id))
       .where(eq(atmospheres.id, id));
 
     return atmosphere;
   }
 
-  async findVisibleById(
-    id: string,
-    userId: string,
-  ): Promise<AtmosphereSelect > {
+  async findVisibleById(id: string, userId: string) {
     const [atmosphere] = await this.databaseService.db
-      .select()
+      .select({
+        id: atmospheres.id,
+        name: atmospheres.name,
+        ownerId: atmospheres.ownerId,
+        file: files
+      })
       .from(atmospheres)
+      .innerJoin(files, eq(atmospheres.fileId, files.id))
       .where(
         and(
           eq(atmospheres.id, id),

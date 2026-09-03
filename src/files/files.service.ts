@@ -86,20 +86,6 @@ export class FilesService {
     });
   }
 
-  async getPublicUrl(fileId: string) {
-    const file = await this.filesRepository.findById(fileId);
-
-    if (!file) {
-      throw Exceptions.NOT_FOUND('File');
-    }
-
-    return this.filesMapper.buildFilePublicUrl(
-      this.RUSTFS_URL,
-      this.BUCKET_NAME,
-      file.key,
-    );
-  }
-
   buildPublicUrl(file: FileSelect): string {
     return this.filesMapper.buildFilePublicUrl(
       this.RUSTFS_URL,
