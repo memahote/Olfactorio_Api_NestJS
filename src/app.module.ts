@@ -15,6 +15,7 @@ import { ImpressionsModule } from './impressions/impressions.module';
 import { FeelingsModule } from './feelings/feelings.module';
 import { AtmospheresModule } from './atmospheres/atmospheres.module';
 import { NotesModule } from './notes/notes.module';
+import { ExploredFamiliesModule } from './explored_families/explored_families.module';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { NotesModule } from './notes/notes.module';
     FeelingsModule,
     AtmospheresModule,
     NotesModule,
+    ExploredFamiliesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

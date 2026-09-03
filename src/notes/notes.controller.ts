@@ -12,6 +12,8 @@ import { CreateNoteDto } from './_utils/dtos/requests/create-note.dto';
 import { Roles } from 'src/_utils/decorators/roles.decorator';
 import { RoleEnum } from 'src/roles/utils/enums/role.enum';
 import { FormDataRequest } from 'nestjs-form-data';
+import { CurrentUser } from 'src/_utils/decorators/currentUser.decorator';
+import { GetUserDto } from 'src/users/_utils/dtos/responses/get-user.dto';
 
 @Controller('notes')
 export class NotesController {
@@ -24,8 +26,6 @@ export class NotesController {
     return this.notesService.createNote(createNoteDto);
   }
 
-  //GetNotesByFamilyId ->on recupere seulement les note d'une famille jamais toute les note existante
-
   @Get(':id')
   findNoteById(@Param('id', ParseUUIDPipe) id: string) {
     return this.notesService.findNoteById(id);
@@ -37,8 +37,8 @@ export class NotesController {
   }
 
   @Get('/family/:id')
-  findNotesByFamilyId(@Param('id', ParseUUIDPipe) id: string) {
-    return this.notesService.findNotesByFamilyId(id);
+  findNotesByFamilyId(@Param('id', ParseUUIDPipe) familyId: string, @CurrentUser() user: GetUserDto ) {
+    return this.notesService.findNotesByFamilyId(familyId, user.id);
   }
 
   @Delete(':id')
