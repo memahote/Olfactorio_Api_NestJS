@@ -11,6 +11,7 @@ import {
 } from 'src/files/_utils/enums/files.enums';
 import { ExploredFamiliesService } from 'src/explored_families/explored_families.service';
 import { ExploredNotesService } from 'src/explored_notes/explored_notes.service';
+import { FavoriteNotesService } from 'src/favorite_notes/favorite_notes.service';
 
 @Injectable()
 export class NotesService {
@@ -20,6 +21,7 @@ export class NotesService {
     private readonly notesMapper: NotesMapper,
     private readonly exploredFamiliesService: ExploredFamiliesService,
     private readonly exploredNotesService: ExploredNotesService,
+    private readonly favoriteNotesService: FavoriteNotesService
   ) {}
 
   async createNote(createNoteDto: CreateNoteDto): Promise<NoteResponseDto> {
@@ -91,6 +93,26 @@ export class NotesService {
     return notes.map((note) =>
       this.notesMapper.toResponse(note.note, note.file),
     );
+  }
+
+  async addToFavorite(userId: string, noteId: string) {
+    const note = await this.notesRepository.findNoteById(noteId);
+
+    if (!note) {
+      throw Exceptions.NOT_FOUND('Note');
+    }
+
+    return this.favoriteNotesService.addToFavorite(userId, noteId);
+  }
+
+  async unfavorite(userId: string, noteId: string) {
+    const note = await this.notesRepository.findNoteById(noteId);
+
+    if (!note) {
+      throw Exceptions.NOT_FOUND('Note');
+    }
+
+    return this.favoriteNotesService.unfavorite(userId, noteId);
   }
 
   async deleteNote(id: string) {

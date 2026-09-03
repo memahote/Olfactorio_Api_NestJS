@@ -7,10 +7,11 @@ import { NotesMapper } from './notes.mapper';
 import { FilesModule } from 'src/files/files.module';
 import { ExploredFamiliesModule } from 'src/explored_families/explored_families.module';
 import { ExploredNotesModule } from 'src/explored_notes/explored_notes.module';
+import { FavoriteNotesModule } from 'src/favorite_notes/favorite_notes.module';
 
 @Module({
   controllers: [NotesController],
   providers: [NotesService, NotesRepository, NotesMapper],
-  imports: [DatabaseModule, FilesModule, ExploredFamiliesModule, ExploredNotesModule]
+  imports: [DatabaseModule, FilesModule, ExploredFamiliesModule, ExploredNotesModule, FavoriteNotesModule]
 })
 export class NotesModule {}
