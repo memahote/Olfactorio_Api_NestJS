@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { RefreshTokenRepository } from './refresh-token.repository';
 import { CreateRefreshToken } from './utils/types/create-refresh-token.type';
+import { Cron, CronExpression } from '@nestjs/schedule';
 
 @Injectable()
 export class RefreshTokenService {
@@ -18,5 +19,10 @@ export class RefreshTokenService {
 
   async revoke(id: string) {
     return this.refreshTokenRepository.revoke(id);
+  }
+
+  @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
+  async deleteExpiredTokens() {
+    const deleted = await this.refreshTokenRepository.deleteExpired();
   }
 }
