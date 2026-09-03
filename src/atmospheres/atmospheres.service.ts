@@ -47,9 +47,10 @@ export class AtmospheresService {
         ),
       );
 
-      const imageUrl = await this.filesService.getPublicUrl(file.id);
-
-      return this.atmospheresMapper.toGetAtmosphereDto(atmosphere, imageUrl);
+      return this.atmospheresMapper.toGetAtmosphereDto({
+        ...atmosphere,
+        file,
+      });
     } catch (error) {
       await this.filesService.deleteFile(file);
       throw error;
@@ -78,9 +79,10 @@ export class AtmospheresService {
         this.atmospheresMapper.toCreateAtmosphereData(dto, null, file.id),
       );
 
-      const imageUrl = await this.filesService.getPublicUrl(file.id);
-
-      return this.atmospheresMapper.toGetAtmosphereDto(atmosphere, imageUrl);
+      return this.atmospheresMapper.toGetAtmosphereDto({
+        ...atmosphere,
+        file,
+      });
     } catch (error) {
       await this.filesService.deleteFile(file);
       throw error;
@@ -97,9 +99,7 @@ export class AtmospheresService {
       throw Exceptions.NOT_FOUND('Atmosphere');
     }
 
-    const imageUrl = await this.filesService.getPublicUrl(atmosphere.fileId);
-
-    return this.atmospheresMapper.toGetAtmosphereDto(atmosphere, imageUrl);
+    return this.atmospheresMapper.toGetAtmosphereDto(atmosphere);
   }
 
   async findAllUserAtmospheres(userId: string): Promise<GetAtmosphereDto[]> {
@@ -107,12 +107,8 @@ export class AtmospheresService {
       await this.atmosphereRepository.findAllUserAtmospheres(userId);
 
     return Promise.all(
-      atmospheres.map(async (atmosphere) => {
-        const imageUrl = await this.filesService.getPublicUrl(
-          atmosphere.fileId,
-        );
-
-        return this.atmospheresMapper.toGetAtmosphereDto(atmosphere, imageUrl);
+      atmospheres.map((atmosphere) => {
+        return this.atmospheresMapper.toGetAtmosphereDto(atmosphere);
       }),
     );
   }
@@ -121,12 +117,8 @@ export class AtmospheresService {
     const atmospheres = await this.atmosphereRepository.findAllDefault();
 
     return Promise.all(
-      atmospheres.map(async (atmosphere) => {
-        const imageUrl = await this.filesService.getPublicUrl(
-          atmosphere.fileId,
-        );
-
-        return this.atmospheresMapper.toGetAtmosphereDto(atmosphere, imageUrl);
+      atmospheres.map((atmosphere) => {
+        return this.atmospheresMapper.toGetAtmosphereDto(atmosphere);
       }),
     );
   }
@@ -135,32 +127,36 @@ export class AtmospheresService {
     const atmospheres = await this.atmosphereRepository.findAllAtmosphere();
 
     return Promise.all(
-      atmospheres.map(async (atmosphere) => {
-        const imageUrl = await this.filesService.getPublicUrl(
-          atmosphere.fileId,
-        );
-
-        return this.atmospheresMapper.toGetAtmosphereDto(atmosphere, imageUrl);
+      atmospheres.map((atmosphere) => {
+        return this.atmospheresMapper.toGetAtmosphereDto(atmosphere);
       }),
     );
   }
 
   async delete(id: string, userId: string) {
-    const deleteAtmosphere = await this.atmosphereRepository.delete(id, userId);
+    const deleteAtmosphere = await this.atmosphereRepository.findById(id);
 
     if (!deleteAtmosphere) {
       throw Exceptions.NOT_FOUND('Atmosphere');
     }
+
+    await this.atmosphereRepository.delete(id, userId);
+
+    await this.filesService.deleteFile(deleteAtmosphere.file);
 
     return deleteAtmosphere;
   }
 
   async deleteDefault(id: string) {
-    const deleteAtmosphere = await this.atmosphereRepository.deleteDefault(id);
+    const deleteAtmosphere = await this.atmosphereRepository.findById(id);
 
     if (!deleteAtmosphere) {
       throw Exceptions.NOT_FOUND('Atmosphere');
     }
+
+    await this.atmosphereRepository.deleteDefault(id);
+
+    await this.filesService.deleteFile(deleteAtmosphere.file);
 
     return deleteAtmosphere;
   }

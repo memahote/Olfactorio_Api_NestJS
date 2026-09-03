@@ -18,7 +18,7 @@ export const notePyramidLevelEnum = pgEnum('note_pyramid_level', [
   NotePyramidLevelEnum.BASE,
 ]);
 
-export const Notes = pgTable(
+export const notes = pgTable(
   'notes',
   {
     id: uuid().defaultRandom().primaryKey(),

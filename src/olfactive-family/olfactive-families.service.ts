@@ -8,6 +8,7 @@ import { CreateOlfactiveFamilyDto } from './_utils/dtos/requests/create-olfactiv
 import { OlfactiveFamiliesMapper } from './olfactive-families.mapper';
 import { OlfactiveFamiliesRepository } from './olfactive-families.repository';
 import { Exceptions } from 'src/_utils/exceptions/exceptions';
+import { GetOlfactiveFamilyDto } from './_utils/dtos/responses/get-olfactive-family.dto';
 
 @Injectable()
 export class OlfactiveFamiliesService {
@@ -44,13 +45,11 @@ export class OlfactiveFamiliesService {
           createOlfactiveFamilyDto.attributeIds,
         );
 
-      const imageUrl = await this.filesService.getPublicUrl(file.id);
-
-      return this.olfactiveFamilyMapper.toGetOlfactiveFamilyDto(
-        olfactiveFamily.family,
-        imageUrl,
-        olfactiveFamily.attributes,
-      );
+      return this.olfactiveFamilyMapper.toResponse({
+        ...olfactiveFamily.family,
+        file,
+        attributes: olfactiveFamily.attributes,
+      });
     } catch (error) {
       await this.filesService.deleteFile(file);
       throw error;
@@ -61,38 +60,20 @@ export class OlfactiveFamiliesService {
     const families =
       await this.olfactiveFamilyRepository.findAllWithAttributes();
 
-    return Promise.all(
-      families.map(async ({ family, attributes }) => {
-        const imageUrl = await this.filesService.getPublicUrl(family.fileId);
-
-        return this.olfactiveFamilyMapper.toGetOlfactiveFamilyDto(
-          family,
-          imageUrl,
-          attributes,
-        );
-      }),
+    return families.map((family) =>
+      this.olfactiveFamilyMapper.toResponse(family),
     );
   }
 
-  async getOlfactiveFamilyById(id: string) {
-    const rows =
+  async getOlfactiveFamilyById(id: string): Promise<GetOlfactiveFamilyDto> {
+    const family =
       await this.olfactiveFamilyRepository.findByIdWithAttributes(id);
 
-    if (rows.length === 0) {
+    if (!family) {
       throw Exceptions.NOT_FOUND('Olfactive family');
     }
 
-    const family = rows[0].family;
-
-    const attributes = rows.map((row) => row.attribute);
-
-    const imageUrl = await this.filesService.getPublicUrl(family.fileId);
-
-    return this.olfactiveFamilyMapper.toGetOlfactiveFamilyDto(
-      family,
-      imageUrl,
-      attributes,
-    );
+    return this.olfactiveFamilyMapper.toResponse(family);
   }
 
   async deleteOlfactiveFamily(id: string) {

@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseUUIDPipe, Post } from '@nestjs/common';
 import { RolesService } from './roles.service';
 import { CreateRoleDto } from './utils/dtos/requests/create-role.dto';
 import {
@@ -60,7 +60,7 @@ export class RolesController {
   @ApiNoContentResponse({
     description: 'Role successfully deleted',
   })
-  deleteRole(@Param('id') id: string) {
+  deleteRole(@Param('id', ParseUUIDPipe) id: string) {
     return this.rolesService.delete(id);
   }
 }

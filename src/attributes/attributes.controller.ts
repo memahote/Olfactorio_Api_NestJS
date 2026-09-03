@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseUUIDPipe, Post } from '@nestjs/common';
 import {
   ApiConflictResponse,
   ApiCreatedResponse,
@@ -66,7 +66,7 @@ export class AttributesController {
   @ApiNotFoundResponse({
     description: 'Attribute not found.',
   })
-  findById(@Param('id') id: string): Promise<GetAttributeDto> {
+  findById(@Param('id', ParseUUIDPipe) id: string): Promise<GetAttributeDto> {
     return this.attributesService.findById(id);
   }
 
@@ -86,7 +86,7 @@ export class AttributesController {
   @ApiNotFoundResponse({
     description: 'Attribute not found.',
   })
-  delete(@Param('id') id: string): Promise<GetAttributeDto> {
+  delete(@Param('id', ParseUUIDPipe) id: string): Promise<GetAttributeDto> {
     return this.attributesService.delete(id);
   }
 }

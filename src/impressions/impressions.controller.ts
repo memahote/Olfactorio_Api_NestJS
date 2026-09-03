@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseUUIDPipe, Post } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiConflictResponse,
@@ -70,7 +70,7 @@ export class ImpressionsController {
   @ApiNotFoundResponse({
     description: 'The impression was not found.',
   })
-  async findById(@Param('id') id: string) {
+  async findById(@Param('id', ParseUUIDPipe) id: string) {
     return this.impressionsService.findById(id);
   }
 
@@ -94,7 +94,7 @@ export class ImpressionsController {
   @ApiNotFoundResponse({
     description: 'The impression was not found.',
   })
-  async delete(@Param('id') id: string) {
+  async delete(@Param('id', ParseUUIDPipe) id: string) {
     return this.impressionsService.delete(id);
   }
 }
