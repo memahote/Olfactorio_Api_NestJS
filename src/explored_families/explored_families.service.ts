@@ -7,7 +7,7 @@ export class ExploredFamiliesService {
     private readonly exploredFamiliesRepository: ExploredFamiliesRepository,
   ) {}
 
-  async explore(userId: string, familyId: string) {
+  async markAsExplored(userId: string, familyId: string) {
     return this.exploredFamiliesRepository.create(userId, familyId);
   }
 }

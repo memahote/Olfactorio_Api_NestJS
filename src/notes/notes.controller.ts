@@ -26,19 +26,41 @@ export class NotesController {
     return this.notesService.createNote(createNoteDto);
   }
 
+  @Post('favorite/:id')
+  addToFavorite(
+    @CurrentUser() user: GetUserDto,
+    @Param('id', ParseUUIDPipe) noteId: string,
+  ) {
+    return this.notesService.addToFavorite(user.id, noteId);
+  }
+
   @Get(':id')
-  findNoteById(@Param('id', ParseUUIDPipe) id: string) {
-    return this.notesService.findNoteById(id);
+  getNoteDetails(
+    @Param('id', ParseUUIDPipe) noteId: string,
+    @CurrentUser() user: GetUserDto,
+  ) {
+    return this.notesService.findNoteById(noteId, user.id);
   }
 
   @Get('variations/:id')
-  findNoteVariations(@Param('id', ParseUUIDPipe) id: string) {
+  getNoteVariations(@Param('id', ParseUUIDPipe) id: string) {
     return this.notesService.findNoteVariations(id);
   }
 
   @Get('/family/:id')
-  findNotesByFamilyId(@Param('id', ParseUUIDPipe) familyId: string, @CurrentUser() user: GetUserDto ) {
+  getNotesByFamilyId(
+    @Param('id', ParseUUIDPipe) familyId: string,
+    @CurrentUser() user: GetUserDto,
+  ) {
     return this.notesService.findNotesByFamilyId(familyId, user.id);
+  }
+
+  @Delete('/favorite/:id')
+  unfavorite(
+    @CurrentUser() user: GetUserDto,
+    @Param('id', ParseUUIDPipe) noteId: string,
+  ) {
+    return this.notesService.unfavorite(user.id, noteId);
   }
 
   @Delete(':id')
