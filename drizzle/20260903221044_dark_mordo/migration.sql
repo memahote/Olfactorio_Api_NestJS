@@ -1,0 +1,1 @@
+ALTER TABLE "note_attribute" ADD PRIMARY KEY ("note_id","attribute_id");

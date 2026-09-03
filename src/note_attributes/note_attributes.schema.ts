@@ -1,13 +1,13 @@
 import { pgTable, uuid, primaryKey } from 'drizzle-orm/pg-core';
 import { attributes } from '../attributes/attributes.schema';
-import { olfactiveFamilies } from 'src/olfactive-family/olfactive-families.schema';
+import { notes } from 'src/notes/notes.schema';
 
-export const familyAttributes = pgTable(
-  'family_attribute',
+export const noteAttributes = pgTable(
+  'note_attribute',
   {
-    familyId: uuid('family_id')
+    noteId: uuid('note_id')
       .notNull()
-      .references(() => olfactiveFamilies.id, {
+      .references(() => notes.id, {
         onDelete: 'cascade',
       }),
 
@@ -19,7 +19,7 @@ export const familyAttributes = pgTable(
   },
   (table) => [
     primaryKey({
-      columns: [table.familyId, table.attributeId],
+      columns: [table.noteId, table.attributeId],
     }),
   ],
 );

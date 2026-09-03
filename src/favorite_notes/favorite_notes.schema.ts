@@ -1,5 +1,5 @@
 import { pgTable, primaryKey, timestamp, uuid } from 'drizzle-orm/pg-core';
-import { olfactiveFamilies } from 'src/olfactive-family/olfactive-families.schema';
+import { notes } from 'src/notes/notes.schema';
 import { users } from 'src/users/users.schema';
 
 export const favoriteNotes = pgTable(
@@ -12,7 +12,7 @@ export const favoriteNotes = pgTable(
       }),
     noteId: uuid('note_id')
       .notNull()
-      .references(() => olfactiveFamilies.id, {
+      .references(() => notes.id, {
         onDelete: 'cascade',
       }),
     createdAt: timestamp('created_at', {
@@ -22,10 +22,8 @@ export const favoriteNotes = pgTable(
       .notNull(),
   },
   (table) => [
-    {
-      pk: primaryKey({
-        columns: [table.userId, table.noteId],
-      }),
-    },
+    primaryKey({
+      columns: [table.userId, table.noteId],
+    }),
   ],
 );

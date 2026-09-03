@@ -4,6 +4,7 @@ import { NoteInsert, NoteSelect } from './_utils/types/notes.types';
 import { CreateNoteDto } from './_utils/dtos/requests/create-note.dto';
 import { FileSelect } from 'src/files/_utils/types/files.types';
 import { FilesService } from 'src/files/files.service';
+import { AttributeSelect } from 'src/attributes/_utils/types/attributes.types';
 
 @Injectable()
 export class NotesMapper {
@@ -20,7 +21,7 @@ export class NotesMapper {
     fileId: fileId,
   });
 
-  toResponse = (note: NoteSelect, file: FileSelect): NoteResponseDto => ({
+  toResponse = (note: NoteSelect, file: FileSelect, attributes: AttributeSelect[]): NoteResponseDto => ({
     id: note.id,
     name: note.name,
     olfactiveDescription: note.olfactiveDescription,
@@ -28,5 +29,6 @@ export class NotesMapper {
     imageUrl: this.filesService.buildPublicUrl(file),
     pyramidLevel: note.pyramidLevel,
     pyramidDescription: note.pyramidDescription,
+    attributes: attributes
   });
 }

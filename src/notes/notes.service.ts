@@ -12,6 +12,7 @@ import {
 import { ExploredFamiliesService } from 'src/explored_families/explored_families.service';
 import { ExploredNotesService } from 'src/explored_notes/explored_notes.service';
 import { FavoriteNotesService } from 'src/favorite_notes/favorite_notes.service';
+import { NoteAttributesService } from 'src/note_attributes/note_attributes.service';
 
 @Injectable()
 export class NotesService {
@@ -21,7 +22,8 @@ export class NotesService {
     private readonly notesMapper: NotesMapper,
     private readonly exploredFamiliesService: ExploredFamiliesService,
     private readonly exploredNotesService: ExploredNotesService,
-    private readonly favoriteNotesService: FavoriteNotesService
+    private readonly favoriteNotesService: FavoriteNotesService,
+    private readonly noteAttributesService: NoteAttributesService
   ) {}
 
   async createNote(createNoteDto: CreateNoteDto): Promise<NoteResponseDto> {
@@ -45,7 +47,13 @@ export class NotesService {
         this.notesMapper.toNoteInsert(createNoteDto, file.id),
       );
 
-      return this.notesMapper.toResponse(note, file);
+      await this.noteAttributesService.addAttributes(
+      note.id,
+        createNoteDto.attributeIds,
+    );
+
+      const attributes = await this.noteAttributesService.findByNoteId(note.id)
+      return this.notesMapper.toResponse(note, file, attributes);
     } catch (error) {
       await this.filesService.deleteFile(file);
       throw error;
@@ -61,7 +69,7 @@ export class NotesService {
 
     await this.exploredNotesService.markAsExplored(userId, noteId);
 
-    return this.notesMapper.toResponse(note.note, note.file);
+    return this.notesMapper.toResponse(note.note, note.file, note.attributes);
   }
 
   async findNoteVariations(noteId: string): Promise<NoteResponseDto[]> {
@@ -74,7 +82,7 @@ export class NotesService {
     const notes = await this.notesRepository.findNoteVariations(noteId);
 
     return notes.map((note) =>
-      this.notesMapper.toResponse(note.note, note.file),
+      this.notesMapper.toResponse(note.note, note.file, note.attributes),
     );
   }
 
@@ -91,7 +99,7 @@ export class NotesService {
     await this.exploredFamiliesService.markAsExplored(userId, familyId);
 
     return notes.map((note) =>
-      this.notesMapper.toResponse(note.note, note.file),
+      this.notesMapper.toResponse(note.note, note.file, note.attributes),
     );
   }
 

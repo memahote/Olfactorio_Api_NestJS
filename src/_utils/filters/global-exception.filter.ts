@@ -32,6 +32,14 @@ export class GlobalExceptionFilter implements ExceptionFilter {
           error: 'Conflict',
         });
       }
+
+      if(cause.code === '23503'){
+        return response.status(HttpStatus.BAD_REQUEST).json({
+          statusCode: HttpStatus.BAD_REQUEST,
+          message: 'Referenced resource does not exist',
+          error: 'Bad request',
+        });
+      }
     }
     return response.status(500).json({
       statusCode: 500,
