@@ -3,7 +3,7 @@ import { attributes } from '../attributes/attributes.schema';
 import { olfactiveFamilies } from 'src/olfactive-family/olfactive-families.schema';
 
 export const familyAttributes = pgTable(
-  'family_attribute',
+  'family_attributes',
   {
     familyId: uuid('family_id')
       .notNull()

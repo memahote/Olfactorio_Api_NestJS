@@ -39,7 +39,7 @@ export class NotesController {
     @Param('id', ParseUUIDPipe) noteId: string,
     @CurrentUser() user: GetUserDto,
   ) {
-    return this.notesService.findNoteById(noteId, user.id);
+    return this.notesService.findNoteDetailsById(noteId, user.id);
   }
 
   @Get('variations/:id')

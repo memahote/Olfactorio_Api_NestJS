@@ -6,6 +6,7 @@ import { FileSelect } from 'src/files/_utils/types/files.types';
 import { FilesService } from 'src/files/files.service';
 import { AttributeSelect } from 'src/attributes/_utils/types/attributes.types';
 import { ImpressionSelect } from 'src/impressions/_utils/types/impressions.type';
+import { NoteLightResponseDto } from './_utils/dtos/responses/note-light-response.dto';
 
 @Injectable()
 export class NotesMapper {
@@ -27,6 +28,7 @@ export class NotesMapper {
     file: FileSelect,
     attributes: AttributeSelect[],
     impressions: ImpressionSelect[],
+    associatedNotes?: NoteLightResponseDto,
   ): NoteResponseDto => ({
     id: note.id,
     name: note.name,
@@ -36,6 +38,17 @@ export class NotesMapper {
     pyramidLevel: note.pyramidLevel,
     pyramidDescription: note.pyramidDescription,
     attributes: attributes,
-    impressions: impressions
+    impressions: impressions,
+  });
+
+  toLightResponse = (
+    note: NoteSelect,
+    file: FileSelect,
+    attributes: AttributeSelect[],
+  ): NoteLightResponseDto => ({
+    id: note.id,
+    name: note.name,
+    imageUrl: this.filesService.buildPublicUrl(file),
+    attributes: attributes,
   });
 }
