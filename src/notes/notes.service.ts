@@ -28,7 +28,7 @@ export class NotesService {
     private readonly favoriteNotesService: FavoriteNotesService,
     private readonly noteAttributesService: NoteAttributesService,
     private readonly noteImpressionsService: NoteImpressionsService,
-    private readonly associatedNotesService: AssociatedNotesService
+    private readonly associatedNotesService: AssociatedNotesService,
   ) {}
 
   async createNote(createNoteDto: CreateNoteDto): Promise<NoteResponseDto> {
@@ -63,7 +63,10 @@ export class NotesService {
       );
 
       if (createNoteDto.associatedNoteIds) {
-        await this.associatedNotesService.associateMany(note.id, createNoteDto.associatedNoteIds)
+        await this.associatedNotesService.associateMany(
+          note.id,
+          createNoteDto.associatedNoteIds,
+        );
       }
 
       const attributes = await this.noteAttributesService.findByNoteId(note.id);
@@ -78,8 +81,11 @@ export class NotesService {
     }
   }
 
-  async findNoteById(noteId: string, userId: string): Promise<NoteResponseDto> {
-    const note = await this.notesRepository.findNoteById(noteId);
+  async findNoteDetailsById(
+    noteId: string,
+    userId: string,
+  ): Promise<NoteResponseDto> {
+    const note = await this.notesRepository.findNoteDetailsById(noteId);
 
     if (!note) {
       throw Exceptions.NOT_FOUND('Note');
@@ -127,11 +133,7 @@ export class NotesService {
     await this.exploredFamiliesService.markAsExplored(userId, familyId);
 
     return notes.map((note) =>
-      this.notesMapper.toLightResponse(
-        note.note,
-        note.file,
-        note.attributes
-      ),
+      this.notesMapper.toLightResponse(note.note, note.file, note.attributes),
     );
   }
 

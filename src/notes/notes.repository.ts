@@ -37,16 +37,16 @@ export class NotesRepository {
     return note;
   }
 
-  async findNoteById(id: string) {
+  async findNoteDetailsById(id: string) {
     const [note] = await this.databaseService.db
       .select({
         note: notes,
         file: files,
         attributes: sql<AttributeSelect[]>`
-      json_agg(DISTINCT ${attributes})
+      json_agg( ${attributes})
     `,
         impressions: sql<ImpressionSelect[]>`
-      json_agg(DISTINCT ${impressions})
+      json_agg( ${impressions})
     `,
       })
       .from(notes)
@@ -58,6 +58,18 @@ export class NotesRepository {
       .where(eq(notes.id, id))
       .groupBy(notes.id, files.id);
 
+    return note;
+  }
+
+  async findNoteById(id: string) {
+    const [note] = await this.databaseService.db
+      .select({
+        id: notes.id,
+        file: files,
+      })
+      .from(notes)
+      .innerJoin(files, eq(notes.fileId, files.id))
+      .where(eq(notes.id, id));
     return note;
   }
 

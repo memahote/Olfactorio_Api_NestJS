@@ -3,7 +3,7 @@ import { attributes } from '../attributes/attributes.schema';
 import { notes } from 'src/notes/notes.schema';
 
 export const noteAttributes = pgTable(
-  'note_attribute',
+  'note_attributes',
   {
     noteId: uuid('note_id')
       .notNull()

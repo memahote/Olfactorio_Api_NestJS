@@ -35,12 +35,12 @@ export const notes = pgTable(
       .notNull()
       .defaultNow(),
 
-    familyId: uuid()
+    familyId: uuid('family_id')
       .notNull()
       .references(() => olfactiveFamilies.id, {
         onDelete: 'cascade',
       }),
-    fileId: uuid()
+    fileId: uuid('file_id')
       .notNull()
       .references(() => files.id,),
     parentNoteId: uuid('parent_note_id'),

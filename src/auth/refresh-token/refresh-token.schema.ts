@@ -2,7 +2,7 @@ import { pgTable, index, text, timestamp, uuid} from 'drizzle-orm/pg-core';
 import { users } from 'src/users/users.schema';
 
 export const refreshToken = pgTable(
-  'refresh_token',
+  'refresh_tokens',
   {
     id: uuid('id').defaultRandom().primaryKey(),
 
