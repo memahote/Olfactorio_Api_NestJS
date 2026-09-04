@@ -21,6 +21,7 @@ import { FavoriteNotesModule } from './favorite_notes/favorite_notes.module';
 import { NoteAttributesModule } from './note_attributes/note_attributes.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { NoteImpressionsModule } from './note_impressions/note_impressions.module';
+import { AssociatedNotesModule } from './associated_notes/associated_notes.module';
 
 @Module({
   imports: [
@@ -43,7 +44,8 @@ import { NoteImpressionsModule } from './note_impressions/note_impressions.modul
     FavoriteNotesModule,
     NoteAttributesModule,
     ScheduleModule.forRoot(),
-    NoteImpressionsModule
+    NoteImpressionsModule,
+    AssociatedNotesModule
   ],
   controllers: [AppController],
   providers: [AppService],

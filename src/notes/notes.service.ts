@@ -14,6 +14,8 @@ import { ExploredNotesService } from 'src/explored_notes/explored_notes.service'
 import { FavoriteNotesService } from 'src/favorite_notes/favorite_notes.service';
 import { NoteAttributesService } from 'src/note_attributes/note_attributes.service';
 import { NoteImpressionsService } from 'src/note_impressions/note_impressions.service';
+import { AssociatedNotesService } from 'src/associated_notes/associated_notes.service';
+import { NoteLightResponseDto } from './_utils/dtos/responses/note-light-response.dto';
 
 @Injectable()
 export class NotesService {
@@ -26,6 +28,7 @@ export class NotesService {
     private readonly favoriteNotesService: FavoriteNotesService,
     private readonly noteAttributesService: NoteAttributesService,
     private readonly noteImpressionsService: NoteImpressionsService,
+    private readonly associatedNotesService: AssociatedNotesService
   ) {}
 
   async createNote(createNoteDto: CreateNoteDto): Promise<NoteResponseDto> {
@@ -59,12 +62,14 @@ export class NotesService {
         createNoteDto.impressionIds,
       );
 
+      if (createNoteDto.associatedNoteIds) {
+        await this.associatedNotesService.associateMany(note.id, createNoteDto.associatedNoteIds)
+      }
+
       const attributes = await this.noteAttributesService.findByNoteId(note.id);
-      console.log('attributs');
       const impressions = await this.noteImpressionsService.findByNoteId(
         note.id,
       );
-      console.log('Impressions');
 
       return this.notesMapper.toResponse(note, file, attributes, impressions);
     } catch (error) {
@@ -112,7 +117,7 @@ export class NotesService {
   async findNotesByFamilyId(
     familyId: string,
     userId: string,
-  ): Promise<NoteResponseDto[]> {
+  ): Promise<NoteLightResponseDto[]> {
     const notes = await this.notesRepository.findNotesByFamilyId(familyId);
 
     if (notes.length === 0) {
@@ -122,11 +127,10 @@ export class NotesService {
     await this.exploredFamiliesService.markAsExplored(userId, familyId);
 
     return notes.map((note) =>
-      this.notesMapper.toResponse(
+      this.notesMapper.toLightResponse(
         note.note,
         note.file,
-        note.attributes,
-        note.impressions,
+        note.attributes
       ),
     );
   }

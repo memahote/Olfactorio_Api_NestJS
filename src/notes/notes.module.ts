@@ -10,6 +10,7 @@ import { ExploredNotesModule } from 'src/explored_notes/explored_notes.module';
 import { FavoriteNotesModule } from 'src/favorite_notes/favorite_notes.module';
 import { NoteAttributesModule } from 'src/note_attributes/note_attributes.module';
 import { NoteImpressionsModule } from 'src/note_impressions/note_impressions.module';
+import { AssociatedNotesModule } from 'src/associated_notes/associated_notes.module';
 
 @Module({
   controllers: [NotesController],
@@ -22,6 +23,7 @@ import { NoteImpressionsModule } from 'src/note_impressions/note_impressions.mod
     FavoriteNotesModule,
     NoteAttributesModule,
     NoteImpressionsModule,
+    AssociatedNotesModule
   ],
 })
 export class NotesModule {}
