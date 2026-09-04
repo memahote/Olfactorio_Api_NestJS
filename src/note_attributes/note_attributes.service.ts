@@ -16,6 +16,6 @@ export class NoteAttributesService {
   }
 
   async findByNoteId(noteId: string) {
-  return this.noteAttributesRepository.findByNoteId(noteId);
-}
+    return this.noteAttributesRepository.findByNoteId(noteId);
+  }
 }

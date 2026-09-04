@@ -1,5 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
+  ArrayMinSize,
   IsArray,
   IsEnum,
   IsNotEmpty,
@@ -79,6 +80,7 @@ export class CreateNoteDto {
     example: '550e8400-e29b-41d4-a716-446655440000',
     description: 'Identifier of the olfactive family.',
   })
+  @IsNotEmpty()
   @IsUUID('4')
   familyId: string;
 
@@ -99,7 +101,24 @@ export class CreateNoteDto {
     description:
       'Identifiers of the olfactive attributes associated with the note.',
   })
+  @IsNotEmpty()
   @IsArray()
+  @ArrayMinSize(1)
   @IsUUID('4', { each: true })
   attributeIds: string[];
+
+  @ApiProperty({
+    example: [
+      '550e8400-e29b-41d4-a716-446655440000',
+      '550e8400-e29b-41d4-a716-446655440001',
+      '550e8400-e29b-41d4-a716-446655440002',
+    ],
+    description:
+      'Identifiers of the olfactive impression associated with the note.',
+  })
+  @IsNotEmpty()
+  @IsArray()
+  @ArrayMinSize(1)
+  @IsUUID('4', { each: true })
+  impressionIds: string[];
 }

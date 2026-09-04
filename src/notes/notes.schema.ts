@@ -42,7 +42,7 @@ export const notes = pgTable(
       }),
     fileId: uuid()
       .notNull()
-      .references(() => files.id),
+      .references(() => files.id,),
     parentNoteId: uuid('parent_note_id'),
   },
   (table) => [
