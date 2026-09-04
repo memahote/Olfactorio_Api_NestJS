@@ -7,6 +7,9 @@ import { files } from 'src/files/files.schema';
 import { noteAttributes } from 'src/note_attributes/note_attributes.schema';
 import { attributes } from 'src/attributes/attributes.schema';
 import { AttributeSelect } from 'src/attributes/_utils/types/attributes.types';
+import { noteImpressions } from 'src/note_impressions/note_impressions.schema';
+import { impressions } from 'src/impressions/impressions.schema';
+import { ImpressionSelect } from 'src/impressions/_utils/types/impressions.type';
 
 @Injectable()
 export class NotesRepository {
@@ -40,13 +43,18 @@ export class NotesRepository {
         note: notes,
         file: files,
         attributes: sql<AttributeSelect[]>`
-      json_agg(${attributes})
+      json_agg(DISTINCT ${attributes})
+    `,
+        impressions: sql<ImpressionSelect[]>`
+      json_agg(DISTINCT ${impressions})
     `,
       })
       .from(notes)
       .innerJoin(files, eq(notes.fileId, files.id))
       .innerJoin(noteAttributes, eq(noteAttributes.noteId, notes.id))
       .innerJoin(attributes, eq(attributes.id, noteAttributes.attributeId))
+      .innerJoin(noteImpressions, eq(noteImpressions.noteId, notes.id))
+      .innerJoin(impressions, eq(impressions.id, noteImpressions.impressionId))
       .where(eq(notes.id, id))
       .groupBy(notes.id, files.id);
 
@@ -59,13 +67,18 @@ export class NotesRepository {
         note: notes,
         file: files,
         attributes: sql<AttributeSelect[]>`
-      json_agg(${attributes})
+      json_agg(DISTINCT ${attributes})
+    `,
+        impressions: sql<ImpressionSelect[]>`
+      json_agg(DISTINCT ${impressions})
     `,
       })
       .from(notes)
       .innerJoin(files, eq(notes.fileId, files.id))
       .innerJoin(noteAttributes, eq(noteAttributes.noteId, notes.id))
       .innerJoin(attributes, eq(attributes.id, noteAttributes.attributeId))
+      .innerJoin(noteImpressions, eq(noteImpressions.noteId, notes.id))
+      .innerJoin(impressions, eq(impressions.id, noteImpressions.impressionId))
       .where(eq(notes.parentNoteId, noteId))
       .groupBy(notes.id, files.id);
 
@@ -78,13 +91,18 @@ export class NotesRepository {
         note: notes,
         file: files,
         attributes: sql<AttributeSelect[]>`
-      json_agg(${attributes})
+      json_agg(DISTINCT ${attributes})
+    `,
+        impressions: sql<ImpressionSelect[]>`
+      json_agg(DISTINCT ${impressions})
     `,
       })
       .from(notes)
       .innerJoin(files, eq(notes.fileId, files.id))
       .innerJoin(noteAttributes, eq(noteAttributes.noteId, notes.id))
       .innerJoin(attributes, eq(attributes.id, noteAttributes.attributeId))
+      .innerJoin(noteImpressions, eq(noteImpressions.noteId, notes.id))
+      .innerJoin(impressions, eq(impressions.id, noteImpressions.impressionId))
       .where(and(eq(notes.familyId, familyId), isNull(notes.parentNoteId)))
       .groupBy(notes.id, files.id);
 
