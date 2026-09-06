@@ -16,14 +16,4 @@ export class ComparisonNotesService {
   ) {
     return this.comparisonNotesRepository.createMany(relations, tx);
   }
-
-  async deleteByComparisonId(
-    comparisonId: string,
-    tx = this.databaseService.db,
-  ) {
-    return this.comparisonNotesRepository.deleteByComparisonId(
-      comparisonId,
-      tx,
-    );
-  }
 }
