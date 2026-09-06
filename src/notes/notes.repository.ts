@@ -64,7 +64,7 @@ export class NotesRepository {
   async findNoteById(id: string) {
     const [note] = await this.databaseService.db
       .select({
-        id: notes.id,
+        notes,
         file: files,
       })
       .from(notes)

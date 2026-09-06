@@ -22,6 +22,8 @@ import { NoteAttributesModule } from './note_attributes/note_attributes.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { NoteImpressionsModule } from './note_impressions/note_impressions.module';
 import { AssociatedNotesModule } from './associated_notes/associated_notes.module';
+import { ComparisonModule } from './comparison/comparison.module';
+import { ComparisonNotesModule } from './comparison_notes/comparison_notes.module';
 
 @Module({
   imports: [
@@ -45,7 +47,9 @@ import { AssociatedNotesModule } from './associated_notes/associated_notes.modul
     NoteAttributesModule,
     ScheduleModule.forRoot(),
     NoteImpressionsModule,
-    AssociatedNotesModule
+    AssociatedNotesModule,
+    ComparisonModule,
+    ComparisonNotesModule
   ],
   controllers: [AppController],
   providers: [AppService],
