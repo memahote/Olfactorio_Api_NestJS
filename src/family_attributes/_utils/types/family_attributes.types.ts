@@ -1,4 +1,4 @@
-import { familyAttributes } from "src/family-attributes/family-attributes.schema";
+import { familyAttributes } from 'src/family_attributes/family_attributes.schema';
 
 export type FamilyAttributesInsert = typeof familyAttributes.$inferInsert;
 

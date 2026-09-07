@@ -10,7 +10,7 @@ export class AssociatedNotesService {
 
   async associateMany(noteId: string, associatedNoteIds: string[]) {
     if (associatedNoteIds.includes(noteId)) {
-      throw Exceptions.BAD_REQUEST('A note cannot be associated with itself');
+      throw Exceptions.BAD_REQUEST(', a note cannot be associated with itself');
     }
 
     const relations = associatedNoteIds.map((associatedNoteId) => ({

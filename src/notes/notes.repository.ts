@@ -10,13 +10,18 @@ import { AttributeSelect } from 'src/attributes/_utils/types/attributes.types';
 import { noteImpressions } from 'src/note_impressions/note_impressions.schema';
 import { impressions } from 'src/impressions/impressions.schema';
 import { ImpressionSelect } from 'src/impressions/_utils/types/impressions.type';
+import { TransactionHost } from '@nestjs-cls/transactional';
+import { MyDrizzleAdapter } from 'src/database/_utils/types/database.types';
 
 @Injectable()
 export class NotesRepository {
-  constructor(private readonly databaseService: DatabaseService) {}
+  constructor(
+    private readonly databaseService: DatabaseService,
+    private readonly txHost: TransactionHost<MyDrizzleAdapter>,
+  ) { }
 
   async create(note: NoteInsert): Promise<NoteSelect> {
-    const [createdNote] = await this.databaseService.db
+    const [createdNote] = await this.txHost.tx
       .insert(notes)
       .values(note)
       .returning();
