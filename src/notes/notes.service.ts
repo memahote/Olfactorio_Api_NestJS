@@ -101,6 +101,10 @@ export class NotesService {
     );
   }
 
+  async findNoteById(id: string) {
+    return this.notesRepository.findNoteById(id);
+  }
+
   async findNoteVariations(noteId: string): Promise<NoteResponseDto[]> {
     const note = await this.notesRepository.findNoteById(noteId);
 

@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { ClsModule } from 'nestjs-cls';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
@@ -24,6 +25,9 @@ import { NoteImpressionsModule } from './note_impressions/note_impressions.modul
 import { AssociatedNotesModule } from './associated_notes/associated_notes.module';
 import { ComparisonModule } from './comparison/comparison.module';
 import { ComparisonNotesModule } from './comparison_notes/comparison_notes.module';
+import { DATABASE } from './database/_utils/database.constants';
+import { ClsPluginTransactional } from '@nestjs-cls/transactional';
+import { TransactionalAdapterDrizzleOrm } from '@nestjs-cls/transactional-adapter-drizzle-orm';
 
 @Module({
   imports: [
@@ -49,7 +53,17 @@ import { ComparisonNotesModule } from './comparison_notes/comparison_notes.modul
     NoteImpressionsModule,
     AssociatedNotesModule,
     ComparisonModule,
-    ComparisonNotesModule
+    ComparisonNotesModule,
+    ClsModule.forRoot({
+      plugins: [
+        new ClsPluginTransactional({
+          imports: [DatabaseModule],
+          adapter: new TransactionalAdapterDrizzleOrm({
+            drizzleInstanceToken: DATABASE,
+          }),
+        }),
+      ],
+    }),
   ],
   controllers: [AppController],
   providers: [AppService],

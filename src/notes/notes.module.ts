@@ -25,5 +25,6 @@ import { AssociatedNotesModule } from 'src/associated_notes/associated_notes.mod
     NoteImpressionsModule,
     AssociatedNotesModule
   ],
+  exports: [NotesService]
 })
 export class NotesModule {}

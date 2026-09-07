@@ -1,10 +1,5 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { DatabaseService } from 'src/database/database.service';
-import { NotesRepository } from 'src/notes/notes.repository';
 import { ComparisonRepository } from './comparison.repository';
 import { ComparisonEnum } from './_utils/enums/comparison.enums';
 import { ComparisonNotesService } from 'src/comparison_notes/comparison_notes.service';
@@ -13,47 +8,46 @@ import { Exceptions } from 'src/_utils/exceptions/exceptions';
 import { ComparisonMapper } from './comparison.mapper';
 import { ComparisonValues } from './_utils/types/comparison.types';
 import { NoteInsert } from 'src/notes/_utils/types/notes.types';
+import { NotesService } from 'src/notes/notes.service';
+import { Transactional } from '@nestjs-cls/transactional';
 
 @Injectable()
 export class ComparisonService {
   constructor(
-    private readonly databaseService: DatabaseService,
     private readonly comparisonRepository: ComparisonRepository,
     private readonly comparisonNotesService: ComparisonNotesService,
-    private readonly notesRepository: NotesRepository,
+    private readonly notesService: NotesService,
     private readonly comparisonMapper: ComparisonMapper,
   ) {}
 
-  async create(userId: string, comparisonData: CreateComparisonDto) {
-    const noteA = await this.notesRepository.findNoteById(
-      comparisonData.noteIds[0],
+  @Transactional()
+  async create(userId: string, comparisonDto: CreateComparisonDto) {
+    const noteA = await this.notesService.findNoteById(
+      comparisonDto.noteIds[0],
     );
-    const noteB = await this.notesRepository.findNoteById(
-      comparisonData.noteIds[1],
+    const noteB = await this.notesService.findNoteById(
+      comparisonDto.noteIds[1],
     );
 
-    if (noteA || noteB) {
+    if (!noteA || !noteB) {
       throw Exceptions.NOT_FOUND('One or more notes');
     }
 
-    this.validateComparison(comparisonData.type, noteA, noteB);
+    this.validateComparison(comparisonDto.type, noteA.notes, noteB.notes);
 
-    return this.databaseService.db.transaction(async (tx) => {
-      const createdComparison = await this.comparisonRepository.create(
-        this.comparisonMapper.toComparisonInsert(userId, comparisonData.type),
-        tx,
-      );
 
-      await this.comparisonNotesService.createMany(
-        comparisonData.noteIds.map((noteId) => ({
-          comparisonId: createdComparison.id,
-          noteId,
-        })),
-        tx,
-      );
+    const createdComparison = await this.comparisonRepository.create(
+      this.comparisonMapper.toComparisonInsert(userId, comparisonDto.type),
+    );
 
-      return createdComparison;
-    });
+    await this.comparisonNotesService.createMany(
+      comparisonDto.noteIds.map((noteId) => ({
+        comparisonId: createdComparison.id,
+        noteId,
+      })),
+    );
+
+    return createdComparison;
   }
 
   async findAll(userId: string) {

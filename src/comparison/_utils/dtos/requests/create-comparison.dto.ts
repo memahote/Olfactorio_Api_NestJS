@@ -18,8 +18,6 @@ export class CreateComparisonDto {
 
   @IsNotEmpty()
   @IsArray()
-  @ArrayMinSize(2)
-  @ArrayMaxSize(2)
   @IsUUID('4', { each: true })
   noteIds: string[];
 }

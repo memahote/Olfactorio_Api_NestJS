@@ -5,6 +5,7 @@ import { ComparisonNotesRepository } from './comparison_notes.repository';
 
 @Module({
   providers: [ComparisonNotesService, ComparisonNotesRepository],
-  imports: [DatabaseModule]
+  imports: [DatabaseModule],
+  exports: [ComparisonNotesService]
 })
 export class ComparisonNotesModule {}

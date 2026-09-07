@@ -22,6 +22,9 @@ import { DATABASE } from './_utils/database.constants';
     },
     DatabaseService
   ],
-  exports: [DatabaseService],
+  exports: [
+    DATABASE,
+    DatabaseService
+  ],
 })
 export class DatabaseModule {}
