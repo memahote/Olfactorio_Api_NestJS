@@ -9,6 +9,8 @@ import { OlfactiveFamiliesMapper } from './olfactive-families.mapper';
 import { OlfactiveFamiliesRepository } from './olfactive-families.repository';
 import { Exceptions } from 'src/_utils/exceptions/exceptions';
 import { GetOlfactiveFamilyDto } from './_utils/dtos/responses/get-olfactive-family.dto';
+import { Transactional } from '@nestjs-cls/transactional';
+import { FamilyAttributesService } from 'src/family_attributes/family_attributes.service';
 
 @Injectable()
 export class OlfactiveFamiliesService {
@@ -16,8 +18,10 @@ export class OlfactiveFamiliesService {
     private readonly olfactiveFamilyRepository: OlfactiveFamiliesRepository,
     private readonly olfactiveFamilyMapper: OlfactiveFamiliesMapper,
     private readonly filesService: FilesService,
+    private readonly familyAttributesService: FamilyAttributesService,
   ) {}
 
+  @Transactional()
   async createOlfactiveFamily(
     createOlfactiveFamilyDto: CreateOlfactiveFamilyDto,
   ) {
@@ -36,20 +40,19 @@ export class OlfactiveFamiliesService {
     );
 
     try {
-      const olfactiveFamily =
-        await this.olfactiveFamilyRepository.createWithAttributes(
-          this.olfactiveFamilyMapper.toCreateOlfactiveFamily(
-            createOlfactiveFamilyDto,
-            file.id,
-          ),
-          createOlfactiveFamilyDto.attributeIds,
-        );
+      const olfactiveFamily = await this.olfactiveFamilyRepository.create(
+        this.olfactiveFamilyMapper.toCreateOlfactiveFamily(
+          createOlfactiveFamilyDto,
+          file.id,
+        ),
+      );
 
-      return this.olfactiveFamilyMapper.toResponse({
-        ...olfactiveFamily.family,
-        file,
-        attributes: olfactiveFamily.attributes,
-      });
+      await this.familyAttributesService.createMany(
+        olfactiveFamily.id,
+        createOlfactiveFamilyDto.attributeIds,
+      );
+
+      return olfactiveFamily;
     } catch (error) {
       await this.filesService.deleteFile(file);
       throw error;

@@ -16,6 +16,7 @@ import { NoteAttributesService } from 'src/note_attributes/note_attributes.servi
 import { NoteImpressionsService } from 'src/note_impressions/note_impressions.service';
 import { AssociatedNotesService } from 'src/associated_notes/associated_notes.service';
 import { NoteLightResponseDto } from './_utils/dtos/responses/note-light-response.dto';
+import { Transactional } from '@nestjs-cls/transactional';
 
 @Injectable()
 export class NotesService {
@@ -31,6 +32,7 @@ export class NotesService {
     private readonly associatedNotesService: AssociatedNotesService,
   ) {}
 
+  @Transactional()
   async createNote(createNoteDto: CreateNoteDto): Promise<NoteResponseDto> {
     const existingNote = await this.notesRepository.findByNameAndFamily(
       createNoteDto.name,
@@ -68,13 +70,7 @@ export class NotesService {
           createNoteDto.associatedNoteIds,
         );
       }
-
-      const attributes = await this.noteAttributesService.findByNoteId(note.id);
-      const impressions = await this.noteImpressionsService.findByNoteId(
-        note.id,
-      );
-
-      return this.notesMapper.toResponse(note, file, attributes, impressions);
+      return this.notesMapper.toResponse(note, file);
     } catch (error) {
       await this.filesService.deleteFile(file);
       throw error;

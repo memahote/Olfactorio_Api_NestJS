@@ -26,8 +26,8 @@ export class NotesMapper {
   toResponse = (
     note: NoteSelect,
     file: FileSelect,
-    attributes: AttributeSelect[],
-    impressions: ImpressionSelect[],
+    attributes?: AttributeSelect[],
+    impressions?: ImpressionSelect[],
     associatedNotes?: NoteLightResponseDto,
   ): NoteResponseDto => ({
     id: note.id,
@@ -37,8 +37,9 @@ export class NotesMapper {
     imageUrl: this.filesService.buildPublicUrl(file),
     pyramidLevel: note.pyramidLevel,
     pyramidDescription: note.pyramidDescription,
-    attributes: attributes,
-    impressions: impressions,
+    attributes,
+    impressions,
+    associatedNotes
   });
 
   toLightResponse = (

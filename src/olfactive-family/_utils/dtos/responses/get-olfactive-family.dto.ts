@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { GetAttributeDto } from 'src/attributes/_utils/dtos/responses/get-attribute.dto';
+import { FamilyAttributesSelect } from 'src/family_attributes/_utils/types/family_attributes.types';
 
 export class GetOlfactiveFamilyDto {
   @ApiProperty({

@@ -11,7 +11,7 @@ import { FilesModule } from './files/files.module';
 import { OlfactiveFamiliesModule } from './olfactive-family/olfactive-families.module';
 import { MemoryStoredFile, NestjsFormDataModule } from 'nestjs-form-data';
 import { AttributesModule } from './attributes/attributes.module';
-import { FamilyAttributesModule } from './family-attributes/family-attributes.module';
+import { FamilyAttributesModule } from './family_attributes/family_attributes.module';
 import { ImpressionsModule } from './impressions/impressions.module';
 import { FeelingsModule } from './feelings/feelings.module';
 import { AtmospheresModule } from './atmospheres/atmospheres.module';

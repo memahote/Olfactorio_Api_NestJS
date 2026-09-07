@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { eq, sql } from 'drizzle-orm';
 import { DatabaseService } from 'src/database/database.service';
 import { olfactiveFamilies } from './olfactive-families.schema';
-import { familyAttributes } from 'src/family-attributes/family-attributes.schema';
+import { familyAttributes } from 'src/family_attributes/family_attributes.schema';
 import { attributes } from 'src/attributes/attributes.schema';
 import { files } from 'src/files/files.schema';
 import { AttributeSelect } from 'src/attributes/_utils/types/attributes.types';
@@ -10,46 +10,23 @@ import {
   OlfactiveFamilyInsert,
   OlfactiveFamilyWithAttributesAndFile,
 } from './_utils/types/create-olfactive-family.types';
+import { TransactionHost } from '@nestjs-cls/transactional';
+import { MyDrizzleAdapter } from 'src/database/_utils/types/database.types';
 
 @Injectable()
 export class OlfactiveFamiliesRepository {
-  constructor(private readonly databaseService: DatabaseService) {}
+  constructor(
+    private readonly databaseService: DatabaseService,
+    private readonly txHost: TransactionHost<MyDrizzleAdapter>,
+  ) {}
 
-  async createWithAttributes(
-    familyData: OlfactiveFamilyInsert,
-    attributeIds: string[],
-  ) {
-    return this.databaseService.db.transaction(async (tx) => {
-      const [olfactiveFamily] = await tx
-        .insert(olfactiveFamilies)
-        .values(familyData)
-        .returning();
+  async create(familyData: OlfactiveFamilyInsert) {
+    const [family] = await this.txHost.tx
+      .insert(olfactiveFamilies)
+      .values(familyData)
+      .returning();
 
-      await tx.insert(familyAttributes).values(
-        attributeIds.map((attributeId) => ({
-          familyId: olfactiveFamily.id,
-          attributeId,
-        })),
-      );
-
-      const rows = await tx
-        .select({
-          family: olfactiveFamilies,
-          attribute: attributes,
-        })
-        .from(olfactiveFamilies)
-        .innerJoin(
-          familyAttributes,
-          eq(familyAttributes.familyId, olfactiveFamilies.id),
-        )
-        .innerJoin(attributes, eq(attributes.id, familyAttributes.attributeId))
-        .where(eq(olfactiveFamilies.id, olfactiveFamily.id));
-
-      return {
-        family: rows[0].family,
-        attributes: rows.map((row) => row.attribute),
-      };
-    });
+    return family;
   }
 
   async findAllWithAttributes(): Promise<
