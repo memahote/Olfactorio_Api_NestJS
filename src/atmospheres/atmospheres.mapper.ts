@@ -5,11 +5,10 @@ import {
   AtmosphereInsert,
   AtmosphereWithFile,
 } from './_utils/types/atmospheres.types';
-import { FileSelect } from 'src/files/_utils/types/files.types';
 
 export class AtmospheresMapper {
   constructor(private readonly filesService: FilesService) {}
-  toCreateAtmosphereData = (
+  toAtmosphereInsert = (
     atmosphereDto: CreateAtmosphereDto,
     ownerId: string | null,
     fileId: string,

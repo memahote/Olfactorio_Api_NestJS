@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { DatabaseService } from 'src/database/database.service';
 import { familyAttributes } from './family_attributes.schema';
 import {
   FamilyAttributesInsert,
@@ -11,8 +10,7 @@ import { MyDrizzleAdapter } from 'src/database/_utils/types/database.types';
 @Injectable()
 export class FamilyAttributesRepository {
   constructor(
-    private readonly databaseService: DatabaseService,
-    private readonly txHost: TransactionHost<MyDrizzleAdapter>,
+    private readonly txHost: TransactionHost<MyDrizzleAdapter>
   ) {}
 
   async createMany(

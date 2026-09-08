@@ -1,19 +1,16 @@
 import {
   Body,
   Controller,
-  Delete,
   Get,
   Param,
   ParseUUIDPipe,
   Post,
-  UploadedFile,
 } from '@nestjs/common';
 import { OlfactiveFamiliesService } from './olfactive-families.service';
 import { CreateOlfactiveFamilyDto } from './_utils/dtos/requests/create-olfactive-family.dto';
-import { FormDataRequest, MemoryStoredFile } from 'nestjs-form-data';
+import { FormDataRequest } from 'nestjs-form-data';
 import {
   ApiBadRequestResponse,
-  ApiBody,
   ApiConflictResponse,
   ApiConsumes,
   ApiCreatedResponse,

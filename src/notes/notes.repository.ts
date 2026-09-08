@@ -18,7 +18,7 @@ export class NotesRepository {
   constructor(
     private readonly databaseService: DatabaseService,
     private readonly txHost: TransactionHost<MyDrizzleAdapter>,
-  ) { }
+  ) {}
 
   async create(note: NoteInsert): Promise<NoteSelect> {
     const [createdNote] = await this.txHost.tx
@@ -48,10 +48,10 @@ export class NotesRepository {
         note: notes,
         file: files,
         attributes: sql<AttributeSelect[]>`
-      json_agg( ${attributes})
+      json_agg(DISTINCT${attributes})
     `,
         impressions: sql<ImpressionSelect[]>`
-      json_agg( ${impressions})
+      json_agg(DISTINCT${impressions})
     `,
       })
       .from(notes)
@@ -97,7 +97,7 @@ export class NotesRepository {
       .innerJoin(noteImpressions, eq(noteImpressions.noteId, notes.id))
       .innerJoin(impressions, eq(impressions.id, noteImpressions.impressionId))
       .where(eq(notes.parentNoteId, noteId))
-      .groupBy(notes.id, files.id);
+      .groupBy(notes.id);
 
     return noteVariations;
   }
@@ -108,7 +108,7 @@ export class NotesRepository {
         note: notes,
         file: files,
         attributes: sql<AttributeSelect[]>`
-      json_agg(DISTINCT ${attributes})
+      json_agg(DISTINCT${attributes})
     `,
       })
       .from(notes)

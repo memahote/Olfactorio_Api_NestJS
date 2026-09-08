@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { AssociatedNotesRepository } from './associated_notes.repository';
 import { Exceptions } from 'src/_utils/exceptions/exceptions';
+import { AssociatedNoteSelect } from './_utils/types/associated-notes.types';
 
 @Injectable()
 export class AssociatedNotesService {
@@ -8,7 +9,10 @@ export class AssociatedNotesService {
     private readonly associatedNoteRepository: AssociatedNotesRepository,
   ) {}
 
-  async associateMany(noteId: string, associatedNoteIds: string[]) {
+  async associateMany(
+    noteId: string,
+    associatedNoteIds: string[],
+  ): Promise<AssociatedNoteSelect[]> {
     if (associatedNoteIds.includes(noteId)) {
       throw Exceptions.BAD_REQUEST(', a note cannot be associated with itself');
     }

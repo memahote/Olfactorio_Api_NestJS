@@ -2,9 +2,9 @@ import { ApiProperty } from '@nestjs/swagger';
 import { NotePyramidLevelType } from '../../types/note-pyramid-level.type';
 import { AttributeSelect } from 'src/attributes/_utils/types/attributes.types';
 import { ImpressionSelect } from 'src/impressions/_utils/types/impressions.type';
-import { NoteLightResponseDto } from './note-light-response.dto';
+import { NoteLightDto } from './note-light-response.dto';
 
-export class NoteResponseDto {
+export class GetNoteDto {
   @ApiProperty({ example: 'd1231a46-41a3-48c6-a192-23bef2fca311' })
   id: string;
 
@@ -35,9 +35,18 @@ export class NoteResponseDto {
   })
   pyramidDescription: string;
 
+  @ApiProperty({
+    description: 'Attributes array'
+  })
   attributes?: AttributeSelect[]
 
+  @ApiProperty({
+    description: 'Impression array'
+  })
   impressions?: ImpressionSelect[]
 
-  associatedNotes?: NoteLightResponseDto
+  @ApiProperty({
+    description: 'Associated notes array'
+  })
+  associatedNotes?: NoteLightDto[]
 }
