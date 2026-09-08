@@ -8,6 +8,6 @@ export class ExploredNotesService {
   ) {}
 
   async markAsExplored(userId: string, noteId: string) {
-    return this.ExploredNotesRepository.create(userId, noteId);
+    return this.ExploredNotesRepository.create(noteId, userId);
   }
 }

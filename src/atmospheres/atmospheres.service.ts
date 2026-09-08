@@ -40,7 +40,7 @@ export class AtmospheresService {
 
     try {
       const atmosphere = await this.atmosphereRepository.create(
-        this.atmospheresMapper.toCreateAtmosphereData(
+        this.atmospheresMapper.toAtmosphereInsert(
           atmosphereDto,
           userId,
           file.id,
@@ -76,7 +76,7 @@ export class AtmospheresService {
 
     try {
       const atmosphere = await this.atmosphereRepository.create(
-        this.atmospheresMapper.toCreateAtmosphereData(dto, null, file.id),
+        this.atmospheresMapper.toAtmosphereInsert(dto, null, file.id),
       );
 
       return this.atmospheresMapper.toGetAtmosphereDto({

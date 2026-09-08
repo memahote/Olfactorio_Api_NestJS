@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { CreateNoteDto } from './_utils/dtos/requests/create-note.dto';
 import { NotesRepository } from './notes.repository';
-import { NoteResponseDto } from './_utils/dtos/responses/note-response.dto';
+import { GetNoteDto } from './_utils/dtos/responses/note-response.dto';
 import { FilesService } from 'src/files/files.service';
 import { NotesMapper } from './notes.mapper';
 import { Exceptions } from 'src/_utils/exceptions/exceptions';
@@ -15,7 +15,7 @@ import { FavoriteNotesService } from 'src/favorite_notes/favorite_notes.service'
 import { NoteAttributesService } from 'src/note_attributes/note_attributes.service';
 import { NoteImpressionsService } from 'src/note_impressions/note_impressions.service';
 import { AssociatedNotesService } from 'src/associated_notes/associated_notes.service';
-import { NoteLightResponseDto } from './_utils/dtos/responses/note-light-response.dto';
+import { NoteLightDto } from './_utils/dtos/responses/note-light-response.dto';
 import { Transactional } from '@nestjs-cls/transactional';
 
 @Injectable()
@@ -33,7 +33,7 @@ export class NotesService {
   ) {}
 
   @Transactional()
-  async createNote(createNoteDto: CreateNoteDto): Promise<NoteResponseDto> {
+  async createNote(createNoteDto: CreateNoteDto): Promise<GetNoteDto> {
     const existingNote = await this.notesRepository.findByNameAndFamily(
       createNoteDto.name,
       createNoteDto.familyId,
@@ -70,7 +70,7 @@ export class NotesService {
           createNoteDto.associatedNoteIds,
         );
       }
-      return this.notesMapper.toResponse(note, file);
+      return this.notesMapper.toGetNoteDto(note, file);
     } catch (error) {
       await this.filesService.deleteFile(file);
       throw error;
@@ -80,7 +80,7 @@ export class NotesService {
   async findNoteDetailsById(
     noteId: string,
     userId: string,
-  ): Promise<NoteResponseDto> {
+  ): Promise<GetNoteDto> {
     const note = await this.notesRepository.findNoteDetailsById(noteId);
 
     if (!note) {
@@ -89,7 +89,7 @@ export class NotesService {
 
     await this.exploredNotesService.markAsExplored(userId, noteId);
 
-    return this.notesMapper.toResponse(
+    return this.notesMapper.toGetNoteDto(
       note.note,
       note.file,
       note.attributes,
@@ -101,7 +101,7 @@ export class NotesService {
     return this.notesRepository.findNoteById(id);
   }
 
-  async findNoteVariations(noteId: string): Promise<NoteResponseDto[]> {
+  async findNoteVariations(noteId: string): Promise<GetNoteDto[]> {
     const note = await this.notesRepository.findNoteById(noteId);
 
     if (!note) {
@@ -111,7 +111,7 @@ export class NotesService {
     const notes = await this.notesRepository.findNoteVariations(noteId);
 
     return notes.map((note) =>
-      this.notesMapper.toResponse(
+      this.notesMapper.toGetNoteDto(
         note.note,
         note.file,
         note.attributes,
@@ -123,7 +123,7 @@ export class NotesService {
   async findNotesByFamilyId(
     familyId: string,
     userId: string,
-  ): Promise<NoteLightResponseDto[]> {
+  ): Promise<NoteLightDto[]> {
     const notes = await this.notesRepository.findNotesByFamilyId(familyId);
 
     if (notes.length === 0) {
@@ -133,7 +133,7 @@ export class NotesService {
     await this.exploredFamiliesService.markAsExplored(userId, familyId);
 
     return notes.map((note) =>
-      this.notesMapper.toLightResponse(note.note, note.file, note.attributes),
+      this.notesMapper.toNoteLightDto(note.note, note.file, note.attributes),
     );
   }
 

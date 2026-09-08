@@ -35,7 +35,6 @@ export class ComparisonService {
 
     this.validateComparison(comparisonDto.type, noteA.notes, noteB.notes);
 
-
     const createdComparison = await this.comparisonRepository.create(
       this.comparisonMapper.toComparisonInsert(userId, comparisonDto.type),
     );
@@ -47,7 +46,7 @@ export class ComparisonService {
       })),
     );
 
-    return createdComparison;
+    return this.comparisonMapper.toGetComparisonDto(createdComparison);
   }
 
   async findAll(userId: string) {

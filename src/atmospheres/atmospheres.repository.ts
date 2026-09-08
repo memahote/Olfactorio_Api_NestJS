@@ -28,7 +28,7 @@ export class AtmospheresRepository {
         name: atmospheres.name,
         ownerId: atmospheres.ownerId,
         fileId: atmospheres.fileId,
-        file: files
+        file: files,
       })
       .from(atmospheres)
       .innerJoin(files, eq(atmospheres.fileId, files.id))
@@ -41,7 +41,7 @@ export class AtmospheresRepository {
         id: atmospheres.id,
         name: atmospheres.name,
         ownerId: atmospheres.ownerId,
-        file: files
+        file: files,
       })
       .from(atmospheres)
       .innerJoin(files, eq(atmospheres.fileId, files.id))
@@ -54,7 +54,7 @@ export class AtmospheresRepository {
         id: atmospheres.id,
         name: atmospheres.name,
         ownerId: atmospheres.ownerId,
-        file: files
+        file: files,
       })
       .from(atmospheres)
       .innerJoin(files, eq(atmospheres.fileId, files.id));
@@ -66,7 +66,7 @@ export class AtmospheresRepository {
         id: atmospheres.id,
         name: atmospheres.name,
         ownerId: atmospheres.ownerId,
-        file: files
+        file: files,
       })
       .from(atmospheres)
       .innerJoin(files, eq(atmospheres.fileId, files.id))
@@ -81,7 +81,7 @@ export class AtmospheresRepository {
         id: atmospheres.id,
         name: atmospheres.name,
         ownerId: atmospheres.ownerId,
-        file: files
+        file: files,
       })
       .from(atmospheres)
       .innerJoin(files, eq(atmospheres.fileId, files.id))

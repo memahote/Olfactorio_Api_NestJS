@@ -12,9 +12,8 @@ import { S3_CLIENT_TOKEN } from './files.provider';
 import { FilesMapper } from './files.mapper';
 import { FilesDirectoryPrivacyValues } from './_utils/types/files-directory-privacy-values.types';
 import { FilesDirectoryValues } from './_utils/types/files-directory-values.types';
-import { FileInsert, FileSelect } from './_utils/types/files.types';
+import {  FileSelect } from './_utils/types/files.types';
 import { FilesRepository } from './files.repository';
-import { Exceptions } from 'src/_utils/exceptions/exceptions';
 
 @Injectable()
 export class FilesService {

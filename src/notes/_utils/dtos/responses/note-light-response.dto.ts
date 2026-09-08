@@ -1,7 +1,7 @@
 import { PickType } from '@nestjs/swagger';
-import { NoteResponseDto } from './note-response.dto';
+import { GetNoteDto } from './note-response.dto';
 
-export class NoteLightResponseDto extends PickType(NoteResponseDto, [
+export class NoteLightDto extends PickType(GetNoteDto, [
   'id',
   'name',
   'imageUrl',

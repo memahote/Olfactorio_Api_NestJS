@@ -36,7 +36,7 @@ export class CreateOlfactiveFamilyDto {
     format: 'binary',
   })
   @IsFile()
-  @MaxFileSize(5 * 1024 * 1024)
+  @MaxFileSize(5e6)
   @HasMimeType(['image/*'])
   image: MemoryStoredFile;
 

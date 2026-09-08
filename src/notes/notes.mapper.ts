@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
-import { NoteResponseDto } from './_utils/dtos/responses/note-response.dto';
+import { GetNoteDto } from './_utils/dtos/responses/note-response.dto';
 import { NoteInsert, NoteSelect } from './_utils/types/notes.types';
 import { CreateNoteDto } from './_utils/dtos/requests/create-note.dto';
 import { FileSelect } from 'src/files/_utils/types/files.types';
 import { FilesService } from 'src/files/files.service';
 import { AttributeSelect } from 'src/attributes/_utils/types/attributes.types';
 import { ImpressionSelect } from 'src/impressions/_utils/types/impressions.type';
-import { NoteLightResponseDto } from './_utils/dtos/responses/note-light-response.dto';
+import { NoteLightDto } from './_utils/dtos/responses/note-light-response.dto';
 
 @Injectable()
 export class NotesMapper {
@@ -23,13 +23,13 @@ export class NotesMapper {
     fileId: fileId,
   });
 
-  toResponse = (
+  toGetNoteDto = (
     note: NoteSelect,
     file: FileSelect,
     attributes?: AttributeSelect[],
     impressions?: ImpressionSelect[],
-    associatedNotes?: NoteLightResponseDto,
-  ): NoteResponseDto => ({
+    associatedNotes?: NoteLightDto[],
+  ): GetNoteDto => ({
     id: note.id,
     name: note.name,
     olfactiveDescription: note.olfactiveDescription,
@@ -42,11 +42,11 @@ export class NotesMapper {
     associatedNotes
   });
 
-  toLightResponse = (
+  toNoteLightDto = (
     note: NoteSelect,
     file: FileSelect,
     attributes: AttributeSelect[],
-  ): NoteLightResponseDto => ({
+  ): NoteLightDto => ({
     id: note.id,
     name: note.name,
     imageUrl: this.filesService.buildPublicUrl(file),
